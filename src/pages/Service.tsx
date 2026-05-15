@@ -14,7 +14,7 @@ import ServiceForm from '../components/service/ServiceForm'
 const filterOptions = [
   { label: 'Vše', value: 'all' },
   { label: 'Servis', value: 'service' },
-  { label: 'STK & Poj.', value: 'docs' },
+  { label: 'Pojištění & STK', value: 'docs' },
   { label: 'Ostatní', value: 'other' },
 ]
 
@@ -68,11 +68,9 @@ export default function Service() {
       </div>
 
       {/* Filter */}
-      {allCarRecords.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
-          <SegmentedControl options={filterOptions} value={filter} onChange={setFilter} />
-        </div>
-      )}
+      <div style={{ marginBottom: 16 }}>
+        <SegmentedControl options={filterOptions} value={filter} onChange={setFilter} />
+      </div>
 
       {/* Content */}
       {!activeCar ? (
