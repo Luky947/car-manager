@@ -90,11 +90,8 @@ export function useDriveBackup() {
   }
 
   async function signIn() {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
-    if (!clientId) {
-      patch({ error: 'Chybí konfigurace Google Drive (VITE_GOOGLE_CLIENT_ID)' })
-      return
-    }
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+      || '913649498603-p75h2rl2no2hn2erat30oi8o8msacfmo.apps.googleusercontent.com'
     patch({ error: null })
     try {
       await waitForGoogle()
