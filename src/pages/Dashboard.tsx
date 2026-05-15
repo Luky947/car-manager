@@ -110,8 +110,7 @@ export default function Dashboard() {
           {/* Active car */}
           <div style={{ marginBottom: 28 }}>
             <p style={sectionLabel}>Aktivní auto</p>
-            <div style={{ background: '#1e1d2e', borderRadius: 18, border: '0.5px solid rgba(255,255,255,0.06)', padding: '20px 20px 16px', overflow: 'hidden', position: 'relative' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(135deg, #6c63ff, #4f9eff)' }} />
+            <div style={{ background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '20px 20px 16px' }}>
               <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
                 {activeCar.brand} {activeCar.model}
               </div>
