@@ -54,6 +54,19 @@ function buildMultipartBody(metadata: object, content: string, boundary: string)
   ].join('\r\n')
 }
 
+function waitForGoogle(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (window.google) { resolve(); return }
+    const interval = setInterval(() => {
+      if (window.google) { clearInterval(interval); resolve() }
+    }, 100)
+    setTimeout(() => {
+      clearInterval(interval)
+      reject(new Error('Google přihlášení se nepodařilo načíst — zkus obnovit stránku'))
+    }, 5000)
+  })
+}
+
 export function useDriveBackup() {
   const [state, setState] = useState<DriveState>({
     isSignedIn: false,
@@ -76,18 +89,28 @@ export function useDriveBackup() {
     setState(s => ({ ...s, ...updates }))
   }
 
-  function signIn() {
-    if (!window.google) {
-      patch({ error: 'Google Identity Services se nepodařilo načíst' })
+  async function signIn() {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
+    if (!clientId) {
+      patch({ error: 'Chybí konfigurace Google Drive (VITE_GOOGLE_CLIENT_ID)' })
       return
     }
     patch({ error: null })
-    const client = window.google.accounts.oauth2.initTokenClient({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+    try {
+      await waitForGoogle()
+    } catch (e) {
+      patch({ error: e instanceof Error ? e.message : 'Google se nepodařilo načíst' })
+      return
+    }
+    const client = window.google!.accounts.oauth2.initTokenClient({
+      client_id: clientId,
       scope: 'https://www.googleapis.com/auth/drive.appdata',
+      error_callback: (err) => {
+        patch({ error: `Přihlášení selhalo: ${err.type}` })
+      },
       callback: async (response) => {
         if (response.error || !response.access_token) {
-          patch({ error: 'Přihlášení selhalo' })
+          patch({ error: `Přihlášení selhalo: ${response.error ?? 'unknown'}` })
           return
         }
         _accessToken = response.access_token
