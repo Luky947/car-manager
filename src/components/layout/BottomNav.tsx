@@ -1,8 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useFab } from '../../context/FabContext'
 
-const routes = ['/', '/service', '/fuel', '/documents', '/settings']
-
 function IconHome({ active }: { active: boolean }) {
   const c = active ? '#6c63ff' : '#9a9da8'
   return (
