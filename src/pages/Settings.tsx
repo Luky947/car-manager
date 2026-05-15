@@ -134,6 +134,9 @@ export default function Settings() {
       {/* ── Google Drive ── */}
       <div style={{ marginBottom: 32 }}>
         <p style={sectionLabel}>Záloha — Google Drive</p>
+        <p style={{ color: 'red', fontSize: 12 }}>
+          CLIENT_ID: {import.meta.env.VITE_GOOGLE_CLIENT_ID ? import.meta.env.VITE_GOOGLE_CLIENT_ID.substring(0, 20) + '...' : 'UNDEFINED'}
+        </p>
         <div style={card}>
           <div style={{ padding: '16px 16px 20px' }}>
 
