@@ -9,7 +9,6 @@ import { useFab } from '../context/FabContext'
 import SegmentedControl from '../components/ui/SegmentedControl'
 import ServiceCard from '../components/service/ServiceCard'
 import ServiceDetail from '../components/service/ServiceDetail'
-import ServiceForm from '../components/service/ServiceForm'
 
 const filterOptions = [
   { label: 'Vše', value: 'all' },
@@ -22,7 +21,7 @@ export default function Service() {
   const activeCar = useCarStore(s => s.activeCar)
   const serviceRecords = useServiceStore(s => s.records)
   const fuelRecords = useFuelStore(s => s.records)
-  const { serviceFormOpen, editingService, closeServiceForm, openServiceForm } = useFab()
+  const { openServiceForm } = useFab()
 
   const [filter, setFilter] = useState('all')
   const [selectedRecord, setSelectedRecord] = useState<ServiceRecord | null>(null)
@@ -125,11 +124,6 @@ export default function Service() {
         currentMileage={currentMileage}
       />
 
-      <ServiceForm
-        record={editingService ?? undefined}
-        isOpen={serviceFormOpen}
-        onClose={closeServiceForm}
-      />
     </div>
   )
 }

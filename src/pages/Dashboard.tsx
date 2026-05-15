@@ -4,7 +4,7 @@ import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
 import { useDocumentStore } from '../stores/useDocumentStore'
 import { useReminders } from '../hooks/useReminders'
-import { getCurrentMileage } from '../utils/calculations'
+import { getCurrentMileage, calculateConsumption } from '../utils/calculations'
 import { getReminderStatus } from '../utils/reminders'
 import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
 import { fuelTypeLabel } from '../utils/labels'
@@ -31,6 +31,14 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
+
+  const consumption = activeCar
+    ? calculateConsumption(fuelRecords.filter(r => r.carId === activeCar.id))
+    : 0
+
+  const serviceCount = activeCar
+    ? serviceRecords.filter(r => r.carId === activeCar.id && !r.deletedAt).length
+    : 0
 
   const urgentReminders = reminders
     .filter(r => {
@@ -117,16 +125,29 @@ export default function Dashboard() {
               <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
                 {activeCar.brand} {activeCar.model}
               </div>
-              <div style={{ fontSize: 13, color: '#9a9da8', marginBottom: 16 }}>
+              <div style={{ fontSize: 13, color: '#9a9da8' }}>
                 {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ background: 'rgba(108,99,255,0.1)', borderRadius: 10, padding: '8px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#6c63ff', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>Stav</div>
-                  <div style={{ fontSize: 18, fontWeight: 600, color: '#f0f0f0' }}>{formatMileage(mileage)}</div>
-                </div>
-              </div>
             </div>
+          </div>
+
+          {/* Stats strip */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+            {[
+              { label: 'Aktuální km', value: mileage.toLocaleString('cs-CZ'), unit: 'km' },
+              { label: 'Spotřeba', value: consumption > 0 ? consumption.toFixed(1) : '–', unit: 'l/100km' },
+              { label: 'Servis', value: serviceCount.toString(), unit: 'záznamů' },
+            ].map(stat => (
+              <div key={stat.label} style={{
+                flex: 1, background: '#1e1d2e', borderRadius: 12,
+                border: '0.5px solid rgba(255,255,255,0.06)',
+                padding: '12px 10px', textAlign: 'center' as const,
+              }}>
+                <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{stat.label}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{stat.value}</div>
+                <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>{stat.unit}</div>
+              </div>
+            ))}
           </div>
 
           {/* Reminders */}

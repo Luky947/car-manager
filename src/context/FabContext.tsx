@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
-import type { Car, ServiceRecord } from '../types'
+import type { Car, ServiceRecord, FuelRecord, Document } from '../types'
 
 interface FabContextValue {
   carFormOpen: boolean
@@ -13,6 +13,14 @@ interface FabContextValue {
   editingService: ServiceRecord | null
   openServiceForm: (record?: ServiceRecord) => void
   closeServiceForm: () => void
+  fuelFormOpen: boolean
+  editingFuel: FuelRecord | null
+  openFuelForm: (record?: FuelRecord) => void
+  closeFuelForm: () => void
+  documentFormOpen: boolean
+  editingDocument: Document | null
+  openDocumentForm: (doc?: Document) => void
+  closeDocumentForm: () => void
 }
 
 const FabContext = createContext<FabContextValue | null>(null)
@@ -23,6 +31,10 @@ export function FabProvider({ children }: { children: ReactNode }) {
   const [fabChoiceOpen, setFabChoiceOpen] = useState(false)
   const [serviceFormOpen, setServiceFormOpen] = useState(false)
   const [editingService, setEditingService] = useState<ServiceRecord | null>(null)
+  const [fuelFormOpen, setFuelFormOpen] = useState(false)
+  const [editingFuel, setEditingFuel] = useState<FuelRecord | null>(null)
+  const [documentFormOpen, setDocumentFormOpen] = useState(false)
+  const [editingDocument, setEditingDocument] = useState<Document | null>(null)
 
   return (
     <FabContext.Provider
@@ -38,6 +50,14 @@ export function FabProvider({ children }: { children: ReactNode }) {
         editingService,
         openServiceForm: (record) => { setEditingService(record ?? null); setServiceFormOpen(true) },
         closeServiceForm: () => { setServiceFormOpen(false); setEditingService(null) },
+        fuelFormOpen,
+        editingFuel,
+        openFuelForm: (record) => { setEditingFuel(record ?? null); setFuelFormOpen(true) },
+        closeFuelForm: () => { setFuelFormOpen(false); setEditingFuel(null) },
+        documentFormOpen,
+        editingDocument,
+        openDocumentForm: (doc) => { setEditingDocument(doc ?? null); setDocumentFormOpen(true) },
+        closeDocumentForm: () => { setDocumentFormOpen(false); setEditingDocument(null) },
       }}
     >
       {children}

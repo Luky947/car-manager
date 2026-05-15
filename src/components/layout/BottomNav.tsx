@@ -65,13 +65,17 @@ const tabs = [
 export default function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { openFabChoice, openServiceForm } = useFab()
+  const { openFabChoice, openServiceForm, openFuelForm, openDocumentForm } = useFab()
 
   const currentPath = location.pathname
 
   function handleFab() {
     if (currentPath === '/service') {
       openServiceForm()
+    } else if (currentPath === '/fuel') {
+      openFuelForm()
+    } else if (currentPath === '/documents') {
+      openDocumentForm()
     } else {
       openFabChoice()
     }
