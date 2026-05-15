@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
@@ -6,7 +7,8 @@ import { useReminders } from '../hooks/useReminders'
 import { getCurrentMileage } from '../utils/calculations'
 import { getReminderStatus } from '../utils/reminders'
 import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
-import { fuelTypeLabel, serviceTypeLabel } from '../utils/labels'
+import { fuelTypeLabel } from '../utils/labels'
+import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import ReminderDot from '../components/ui/ReminderDot'
 
@@ -26,6 +28,7 @@ export default function Dashboard() {
   const documents = useDocumentStore(s => s.documents)
   const reminders = useReminders()
   const { openCarForm } = useFab()
+  const navigate = useNavigate()
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -150,7 +153,7 @@ export default function Dashboard() {
                       <ReminderDot status={status} />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
-                          {serviceTypeLabel[r.type]}
+                          {SERVICE_TYPE_LABELS[r.type]}
                         </div>
                         <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
                           {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
@@ -164,6 +167,12 @@ export default function Dashboard() {
                   )
                 })}
               </div>
+              <button
+                onClick={() => navigate('/service')}
+                style={{ fontSize: 13, color: '#6c63ff', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                Zobrazit vše →
+              </button>
             </div>
           )}
 

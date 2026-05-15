@@ -65,12 +65,16 @@ const tabs = [
 export default function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { openFabChoice } = useFab()
+  const { openFabChoice, openServiceForm } = useFab()
 
   const currentPath = location.pathname
 
   function handleFab() {
-    openFabChoice()
+    if (currentPath === '/service') {
+      openServiceForm()
+    } else {
+      openFabChoice()
+    }
   }
 
   const leftTabs = tabs.slice(0, 2)         // Přehled, Servis
