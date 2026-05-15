@@ -1,6 +1,10 @@
 import { v4 as uuidv4 } from 'uuid'
 import type { Car, ServiceRecord, FuelRecord, Document } from '../types'
 import { getCars, saveCars, saveServiceRecords, saveFuelRecords, saveDocuments } from './storage'
+import { useCarStore } from '../stores/useCarStore'
+import { useServiceStore } from '../stores/useServiceStore'
+import { useFuelStore } from '../stores/useFuelStore'
+import { useDocumentStore } from '../stores/useDocumentStore'
 
 function daysFromNow(days: number): string {
   return new Date(Date.now() + days * 86400000).toISOString().slice(0, 10)
@@ -155,4 +159,11 @@ export function applySeedIfEmpty(): void {
   saveServiceRecords(serviceRecords)
   saveFuelRecords(fuelRecords)
   saveDocuments(documents)
+
+  // Stores were already initialized with [] before this function ran,
+  // so we must update their in-memory state directly.
+  useCarStore.setState({ cars: [car], activeCar: car })
+  useServiceStore.setState({ records: serviceRecords })
+  useFuelStore.setState({ records: fuelRecords })
+  useDocumentStore.setState({ documents })
 }

@@ -73,8 +73,8 @@ export default function BottomNav() {
     openFabChoice()
   }
 
-  const leftTabs = tabs.slice(0, 2)
-  const rightTabs = tabs.slice(3, 5)
+  const leftTabs = tabs.slice(0, 2)         // Přehled, Servis
+  const rightTabs = [tabs[2], tabs[4]]      // Palivo, Nastavení (Doklady přeskočeny)
 
   return (
     <nav
