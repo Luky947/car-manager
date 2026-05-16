@@ -48,25 +48,6 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [carDetailOpen, setCarDetailOpen] = useState(false)
 
-  const animatedCarId = useRef<string | null>(null)
-  const [displayMileage, setDisplayMileage] = useState(0)
-  const [displayConsumption, setDisplayConsumption] = useState(0)
-  const [displayServiceCount, setDisplayServiceCount] = useState(0)
-
-  useEffect(() => {
-    if (!activeCar) return
-    if (animatedCarId.current !== activeCar.id) {
-      animatedCarId.current = activeCar.id
-      animateNumber(0, mileage, 800, setDisplayMileage)
-      animateNumber(0, Math.round(consumption * 10), 800, v => setDisplayConsumption(v / 10))
-      animateNumber(0, serviceCount, 600, setDisplayServiceCount)
-    } else {
-      setDisplayMileage(mileage)
-      setDisplayConsumption(consumption)
-      setDisplayServiceCount(serviceCount)
-    }
-  }, [activeCar, mileage, consumption, serviceCount])
-
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
   const lastMileageRecord = activeCar
@@ -88,6 +69,25 @@ export default function Dashboard() {
   const serviceCount = activeCar
     ? serviceRecords.filter(r => r.carId === activeCar.id && !r.deletedAt).length
     : 0
+
+  const animatedCarId = useRef<string | null>(null)
+  const [displayMileage, setDisplayMileage] = useState(0)
+  const [displayConsumption, setDisplayConsumption] = useState(0)
+  const [displayServiceCount, setDisplayServiceCount] = useState(0)
+
+  useEffect(() => {
+    if (!activeCar) return
+    if (animatedCarId.current !== activeCar.id) {
+      animatedCarId.current = activeCar.id
+      animateNumber(0, mileage, 800, setDisplayMileage)
+      animateNumber(0, Math.round(consumption * 10), 800, v => setDisplayConsumption(v / 10))
+      animateNumber(0, serviceCount, 600, setDisplayServiceCount)
+    } else {
+      setDisplayMileage(mileage)
+      setDisplayConsumption(consumption)
+      setDisplayServiceCount(serviceCount)
+    }
+  }, [activeCar, mileage, consumption, serviceCount])
 
   const urgentReminders = reminders
     .filter(r => {
