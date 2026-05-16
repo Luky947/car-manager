@@ -15,7 +15,7 @@ export default function ServiceIcon({ type, size = 20, color = '#6c63ff' }: Prop
 
   switch (type) {
     case 'oil_change':
-      return <svg {...p}><path d="M12 2 C8 2 5 6 5 10 c0 5 7 12 7 12 s7-7 7-12 c0-4-3-8-7-8z"/></svg>
+      return <svg {...p}><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
 
     case 'tire_change':
       return <svg {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
