@@ -1,5 +1,24 @@
 import type { Car, ServiceRecord, FuelRecord } from '../types'
 
+export function getLastMileageRecord(
+  serviceRecords: ServiceRecord[],
+  fuelRecords: FuelRecord[],
+  carId: string
+): { mileage: number; date: string } | null {
+  const allRecords = [
+    ...serviceRecords
+      .filter(r => r.carId === carId && !r.deletedAt)
+      .map(r => ({ mileage: r.mileage, date: r.date })),
+    ...fuelRecords
+      .filter(r => r.carId === carId && !r.deletedAt)
+      .map(r => ({ mileage: r.mileage, date: r.date })),
+  ]
+
+  if (allRecords.length === 0) return null
+
+  return allRecords.reduce((max, r) => r.mileage > max.mileage ? r : max)
+}
+
 export function getCurrentMileage(
   car: Car,
   serviceRecords: ServiceRecord[],

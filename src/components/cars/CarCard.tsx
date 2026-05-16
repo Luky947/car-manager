@@ -1,7 +1,7 @@
 import type { Car } from '../../types'
 import { useServiceStore } from '../../stores/useServiceStore'
 import { useFuelStore } from '../../stores/useFuelStore'
-import { getCurrentMileage } from '../../utils/calculations'
+import { getCurrentMileage, getLastMileageRecord } from '../../utils/calculations'
 import { formatMileage } from '../../utils/formatters'
 import { fuelTypeLabel } from '../../utils/labels'
 import Badge from '../ui/Badge'
@@ -15,6 +15,15 @@ export default function CarCard({ car, onPress }: Props) {
   const serviceRecords = useServiceStore(s => s.records)
   const fuelRecords = useFuelStore(s => s.records)
   const mileage = getCurrentMileage(car, serviceRecords, fuelRecords)
+  const lastRecord = getLastMileageRecord(serviceRecords, fuelRecords, car.id)
+
+  function formatLastUpdate(date: string): string {
+    const d = new Date(date)
+    const opts: Intl.DateTimeFormatOptions = d.getFullYear() === new Date().getFullYear()
+      ? { day: 'numeric', month: 'numeric' }
+      : { day: 'numeric', month: 'numeric', year: 'numeric' }
+    return `aktualizováno ${d.toLocaleDateString('cs-CZ', opts)}`
+  }
 
   return (
     <button
@@ -55,9 +64,16 @@ export default function CarCard({ car, onPress }: Props) {
           <path d="M12 2a10 10 0 100 20A10 10 0 0012 2z" />
           <path d="M12 6v6l4 2" />
         </svg>
-        <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
-          {formatMileage(mileage)}
-        </span>
+        <div>
+          <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
+            {formatMileage(mileage)}
+          </span>
+          {lastRecord && (
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>
+              {formatLastUpdate(lastRecord.date)}
+            </div>
+          )}
+        </div>
       </div>
     </button>
   )

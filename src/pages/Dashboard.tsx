@@ -4,7 +4,7 @@ import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
 import { useDocumentStore } from '../stores/useDocumentStore'
 import { useReminders } from '../hooks/useReminders'
-import { getCurrentMileage, calculateConsumption } from '../utils/calculations'
+import { getCurrentMileage, calculateConsumption, getLastMileageRecord } from '../utils/calculations'
 import { getReminderStatus } from '../utils/reminders'
 import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
 import { fuelTypeLabel } from '../utils/labels'
@@ -31,6 +31,18 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
+
+  const lastMileageRecord = activeCar
+    ? getLastMileageRecord(serviceRecords, fuelRecords, activeCar.id)
+    : null
+
+  function formatLastUpdate(date: string): string {
+    const d = new Date(date)
+    const opts: Intl.DateTimeFormatOptions = d.getFullYear() === new Date().getFullYear()
+      ? { day: 'numeric', month: 'numeric' }
+      : { day: 'numeric', month: 'numeric', year: 'numeric' }
+    return `aktualizováno ${d.toLocaleDateString('cs-CZ', opts)}`
+  }
 
   const consumption = activeCar
     ? calculateConsumption(fuelRecords.filter(r => r.carId === activeCar.id))
@@ -134,9 +146,14 @@ export default function Dashboard() {
           {/* Stats strip */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
             {[
-              { label: 'Aktuální km', value: mileage.toLocaleString('cs-CZ'), unit: 'km' },
-              { label: 'Spotřeba', value: consumption > 0 ? consumption.toFixed(1) : '–', unit: 'l/100km' },
-              { label: 'Servis', value: serviceCount.toString(), unit: 'záznamů' },
+              {
+                label: 'Aktuální km',
+                value: mileage.toLocaleString('cs-CZ'),
+                unit: 'km',
+                sub: lastMileageRecord ? formatLastUpdate(lastMileageRecord.date) : null,
+              },
+              { label: 'Spotřeba', value: consumption > 0 ? consumption.toFixed(1) : '–', unit: 'l/100km', sub: null },
+              { label: 'Servis', value: serviceCount.toString(), unit: 'záznamů', sub: null },
             ].map(stat => (
               <div key={stat.label} style={{
                 flex: 1, background: '#1e1d2e', borderRadius: 12,
@@ -146,6 +163,7 @@ export default function Dashboard() {
                 <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{stat.label}</div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{stat.value}</div>
                 <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>{stat.unit}</div>
+                {stat.sub && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>{stat.sub}</div>}
               </div>
             ))}
           </div>
