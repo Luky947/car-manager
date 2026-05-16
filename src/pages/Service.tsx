@@ -3,7 +3,8 @@ import type { ServiceRecord } from '../types'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
-import { getCurrentMileage } from '../utils/calculations'
+import { getCurrentMileage, filterRecordsByPeriod, calculateServiceCosts } from '../utils/calculations'
+import type { CostPeriod } from '../utils/calculations'
 import { SERVICE_GROUPS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import SegmentedControl from '../components/ui/SegmentedControl'
@@ -17,6 +18,12 @@ const filterOptions = [
   { label: 'Ostatní', value: 'other' },
 ]
 
+const periodOptions = [
+  { label: 'Vše', value: 'all' },
+  { label: 'Tento rok', value: 'year' },
+  { label: '12 měsíců', value: '12months' },
+]
+
 export default function Service() {
   const activeCar = useCarStore(s => s.activeCar)
   const serviceRecords = useServiceStore(s => s.records)
@@ -24,6 +31,7 @@ export default function Service() {
   const { openServiceForm } = useFab()
 
   const [filter, setFilter] = useState('all')
+  const [period, setPeriod] = useState<CostPeriod>('year')
   const [selectedRecord, setSelectedRecord] = useState<ServiceRecord | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
@@ -41,6 +49,14 @@ export default function Service() {
   const filteredRecords = group
     ? allCarRecords.filter(r => group.includes(r.type))
     : allCarRecords
+
+  const costRecords = filterRecordsByPeriod(allCarRecords, period)
+  const costs = calculateServiceCosts(costRecords)
+
+  function formatCost(amount: number): string {
+    if (amount === 0) return '–'
+    return `${amount.toLocaleString('cs-CZ')} Kč`
+  }
 
   function handleCardPress(record: ServiceRecord) {
     setSelectedRecord(record)
@@ -67,9 +83,40 @@ export default function Service() {
       </div>
 
       {/* Filter */}
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ marginBottom: 12 }}>
         <SegmentedControl options={filterOptions} value={filter} onChange={setFilter} />
       </div>
+
+      {/* Period */}
+      <div style={{ marginBottom: 12 }}>
+        <SegmentedControl options={periodOptions} value={period} onChange={v => setPeriod(v as CostPeriod)} />
+      </div>
+
+      {/* Cost breakdown */}
+      {activeCar && (
+        <div style={{
+          background: 'var(--bg3)',
+          borderRadius: 14,
+          border: '0.5px solid var(--border)',
+          padding: '14px 16px',
+          marginBottom: 16,
+        }}>
+          {[
+            { label: 'Servis', value: costs.service },
+            { label: 'Pojištění & STK', value: costs.insurance },
+            { label: 'Ostatní', value: costs.other },
+          ].map(row => (
+            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <span style={{ fontSize: 14, color: 'var(--text2)' }}>{row.label}</span>
+              <span style={{ fontSize: 14, color: 'var(--text)', fontWeight: 500 }}>{formatCost(row.value)}</span>
+            </div>
+          ))}
+          <div style={{ borderTop: '0.5px solid var(--border)', margin: '8px 0', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 15, color: 'var(--text)', fontWeight: 600 }}>Celkem</span>
+            <span style={{ fontSize: 15, color: 'var(--accent)', fontWeight: 600 }}>{formatCost(costs.total)}</span>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       {!activeCar ? (
