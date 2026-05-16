@@ -44,9 +44,11 @@ export default function Dashboard() {
   const fuelRecords = useFuelStore(s => s.records)
   const documents = useDocumentStore(s => s.documents)
   const reminders = useReminders()
-  const { openCarForm } = useFab()
+  const { openCarForm, openServiceForm, openFuelForm } = useFab()
   const navigate = useNavigate()
   const [carDetailOpen, setCarDetailOpen] = useState(false)
+  const [remindersOpen, setRemindersOpen] = useState(false)
+  const [documentsOpen, setDocumentsOpen] = useState(false)
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -96,10 +98,9 @@ export default function Dashboard() {
     })
     .slice(0, 3)
 
-  const expiringDocs = documents.filter(d => {
-    if (!d.expiryDate || d.deletedAt) return false
-    return daysUntil(d.expiryDate) <= 30
-  })
+  const docsWithExpiry = documents
+    .filter(d => d.expiryDate && !d.deletedAt)
+    .sort((a, b) => new Date(a.expiryDate!).getTime() - new Date(b.expiryDate!).getTime())
 
   if (cars.length === 0) {
     return (
@@ -230,7 +231,7 @@ export default function Dashboard() {
           </div>
 
           {/* Stats row */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
             <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
               <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{displayMileage.toLocaleString('cs-CZ')}</div>
@@ -253,75 +254,206 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Reminders */}
-          {urgentReminders.length > 0 && (
-            <div style={{ marginBottom: 28 }}>
-              <p style={sectionLabel}>Připomínky</p>
-              {urgentReminders.map(r => {
-                const status = getReminderStatus(r, mileage)
-                return (
-                  <div
-                    key={r.id}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      background: '#141414', borderRadius: 16,
-                      border: '0.5px solid rgba(255,255,255,0.07)',
-                      padding: '14px 16px', marginBottom: 8,
-                    }}
-                  >
-                    <ReminderDot status={status} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
-                        {SERVICE_TYPE_LABELS[r.type]}
-                      </div>
-                      <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
-                        {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
-                        {r.nextServiceMileage && ` · ${formatMileage(r.nextServiceMileage)}`}
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: status === 'overdue' ? '#ef4444' : '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      {status === 'overdue' ? 'Prošlé' : 'Brzy'}
-                    </span>
-                  </div>
-                )
-              })}
-              <button
-                onClick={() => navigate('/service')}
-                style={{ fontSize: 13, color: '#e8e8e8', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
-              >
-                Zobrazit vše →
-              </button>
-            </div>
-          )}
-
-          {/* Expiring docs */}
-          {expiringDocs.length > 0 && (
-            <div style={{ marginBottom: 28 }}>
-              <div style={{
-                background: 'rgba(245,158,11,0.15)',
-                borderRadius: 14,
-                border: '0.5px solid rgba(245,158,11,0.3)',
-                padding: '14px 16px',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    <line x1="12" y1="9" x2="12" y2="13" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                  </svg>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b' }}>Dokumenty expirují</span>
-                </div>
-                {expiringDocs.map(doc => (
-                  <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0' }}>
-                    <span style={{ fontSize: 13, color: '#f0f0f0' }}>{doc.title}</span>
-                    <span style={{ fontSize: 12, color: '#f59e0b' }}>
-                      {doc.expiryDate && (daysUntil(doc.expiryDate) <= 0 ? 'Expirováno' : `za ${daysUntil(doc.expiryDate)} dní`)}
-                    </span>
-                  </div>
-                ))}
+          {/* Quick Actions 2×2 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+            {/* Add Service */}
+            <button
+              onClick={() => openServiceForm()}
+              className="pressable"
+              style={{
+                background: '#141414',
+                border: '0.5px solid rgba(255,255,255,0.07)',
+                borderRadius: 16,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 12,
+                aspectRatio: '1',
+                touchAction: 'manipulation',
+              }}
+            >
+              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                </svg>
               </div>
-            </div>
-          )}
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Přidat servis</span>
+            </button>
+
+            {/* Add Fuel */}
+            <button
+              onClick={() => openFuelForm()}
+              className="pressable"
+              style={{
+                background: '#141414',
+                border: '0.5px solid rgba(255,255,255,0.07)',
+                borderRadius: 16,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 12,
+                aspectRatio: '1',
+                touchAction: 'manipulation',
+              }}
+            >
+              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3h10v18H3z"/><path d="M13 7h2a2 2 0 012 2v3a2 2 0 002 2h0V7l-3-4"/><line x1="7" y1="8" x2="9" y2="8"/>
+                </svg>
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Přidat tankování</span>
+            </button>
+
+            {/* Reminders toggle */}
+            <button
+              onClick={() => setRemindersOpen(o => !o)}
+              className="pressable"
+              style={{
+                background: remindersOpen ? '#1a1a1a' : '#141414',
+                border: `0.5px solid ${remindersOpen ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.07)'}`,
+                borderRadius: 16,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 12,
+                aspectRatio: '1',
+                touchAction: 'manipulation',
+                transition: 'background 150ms, border-color 150ms',
+              }}
+            >
+              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+                </svg>
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Připomínky</span>
+            </button>
+
+            {/* Documents toggle */}
+            <button
+              onClick={() => setDocumentsOpen(o => !o)}
+              className="pressable"
+              style={{
+                background: documentsOpen ? '#1a1a1a' : '#141414',
+                border: `0.5px solid ${documentsOpen ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.07)'}`,
+                borderRadius: 16,
+                padding: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 12,
+                aspectRatio: '1',
+                touchAction: 'manipulation',
+                transition: 'background 150ms, border-color 150ms',
+              }}
+            >
+              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Dokumenty</span>
+            </button>
+          </div>
+
+          {/* Accordion — Reminders */}
+          <div style={{
+            overflow: 'hidden',
+            maxHeight: remindersOpen ? '600px' : '0px',
+            opacity: remindersOpen ? 1 : 0,
+            marginBottom: remindersOpen ? 24 : 0,
+            transition: 'max-height 400ms cubic-bezier(0.4,0,0.2,1), opacity 300ms cubic-bezier(0.4,0,0.2,1), margin-bottom 400ms cubic-bezier(0.4,0,0.2,1)',
+          }}>
+            <p style={sectionLabel}>Připomínky</p>
+            {urgentReminders.length === 0 ? (
+              <div style={{ fontSize: 14, color: '#22c55e', padding: '8px 0 4px' }}>Žádné aktivní připomínky ✓</div>
+            ) : (
+              <>
+                {urgentReminders.map(r => {
+                  const status = getReminderStatus(r, mileage)
+                  return (
+                    <div
+                      key={r.id}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        background: '#141414', borderRadius: 16,
+                        border: '0.5px solid rgba(255,255,255,0.07)',
+                        padding: '14px 16px', marginBottom: 8,
+                      }}
+                    >
+                      <ReminderDot status={status} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
+                          {SERVICE_TYPE_LABELS[r.type]}
+                        </div>
+                        <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
+                          {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
+                          {r.nextServiceMileage && ` · ${formatMileage(r.nextServiceMileage)}`}
+                        </div>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: status === 'overdue' ? '#ef4444' : '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        {status === 'overdue' ? 'Prošlé' : 'Brzy'}
+                      </span>
+                    </div>
+                  )
+                })}
+                <button
+                  onClick={() => navigate('/service')}
+                  style={{ fontSize: 13, color: '#e8e8e8', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  Zobrazit vše →
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Accordion — Documents */}
+          <div style={{
+            overflow: 'hidden',
+            maxHeight: documentsOpen ? '600px' : '0px',
+            opacity: documentsOpen ? 1 : 0,
+            marginBottom: documentsOpen ? 24 : 0,
+            transition: 'max-height 400ms cubic-bezier(0.4,0,0.2,1), opacity 300ms cubic-bezier(0.4,0,0.2,1), margin-bottom 400ms cubic-bezier(0.4,0,0.2,1)',
+          }}>
+            <p style={sectionLabel}>Dokumenty</p>
+            {docsWithExpiry.length === 0 ? (
+              <div style={{ fontSize: 14, color: '#22c55e', padding: '8px 0 4px' }}>Žádné dokumenty k expiraci ✓</div>
+            ) : (
+              <>
+                {docsWithExpiry.map(doc => {
+                  const days = daysUntil(doc.expiryDate!)
+                  const color = days <= 0 ? '#ef4444' : days <= 30 ? '#f59e0b' : '#22c55e'
+                  return (
+                    <div
+                      key={doc.id}
+                      style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        padding: '10px 0',
+                        borderBottom: '0.5px solid rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      <span style={{ fontSize: 14, color: '#f0f0f0' }}>{doc.title}</span>
+                      <span style={{ fontSize: 12, color, fontWeight: 500 }}>
+                        {days <= 0 ? 'Expirováno' : days <= 30 ? `za ${days} dní` : formatDate(doc.expiryDate!)}
+                      </span>
+                    </div>
+                  )
+                })}
+                <button
+                  onClick={() => navigate('/documents')}
+                  style={{ fontSize: 13, color: '#e8e8e8', fontWeight: 500, padding: '8px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  Zobrazit vše →
+                </button>
+              </>
+            )}
+          </div>
         </>
       )}
 
