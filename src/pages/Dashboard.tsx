@@ -99,154 +99,117 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 20px' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0' }}>Car Manager</div>
-        {cars.length > 1 && (
-          <select
-            value={activeCar?.id ?? ''}
-            onChange={e => {
-              const car = cars.find(c => c.id === e.target.value)
-              if (car) setActiveCar(car)
-            }}
-            style={{
-              background: '#1e1d2e',
-              color: '#f0f0f0',
-              border: '0.5px solid rgba(255,255,255,0.10)',
-              borderRadius: 10,
-              padding: '6px 12px',
-              fontSize: 13,
-              fontWeight: 500,
-              outline: 'none',
-            }}
-          >
-            {cars.map(c => (
-              <option key={c.id} value={c.id}>{c.brand} {c.model}</option>
-            ))}
-          </select>
-        )}
-      </div>
+    <div style={{ padding: '56px 20px 32px' }}>
 
       {activeCar && (
         <>
-          {/* Active car */}
-          <div style={{ marginBottom: 28 }}>
-            <p style={sectionLabel}>Aktivní auto</p>
-            <div style={{
-              background: 'linear-gradient(145deg, #1e1d2e 0%, #252438 50%, #1a1928 100%)',
-              borderRadius: 20,
-              border: '1px solid rgba(108,99,255,0.25)',
-              overflow: 'hidden',
-              position: 'relative',
-              padding: '0 0 20px 0',
-            }}>
-              {/* Accent line */}
-              <div style={{
-                height: 1,
-                background: 'linear-gradient(90deg, transparent 0%, rgba(108,99,255,0.6) 30%, rgba(79,158,255,0.6) 70%, transparent 100%)',
-                width: '100%',
-              }} />
-              {/* Radial gradient overlay */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '60%',
-                background: 'radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 70%)',
-                pointerEvents: 'none',
-              }} />
-              {/* Car image */}
-              <img
-                src="/car-placeholder.png"
-                alt="Auto"
-                style={{
-                  width: '100%',
-                  maxWidth: 320,
-                  height: 180,
-                  objectFit: 'contain',
-                  display: 'block',
-                  margin: '16px auto -8px auto',
-                  filter: 'drop-shadow(0 12px 32px rgba(0,0,0,0.5))',
-                  position: 'relative',
-                }}
-              />
-              {/* Car info */}
-              <div style={{ padding: '0 20px' }}>
-                <div style={{ fontSize: 24, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
-                  {activeCar.brand} {activeCar.model}
-                </div>
-                <div style={{ fontSize: 14, color: 'var(--text2)' }}>
-                  {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
-                </div>
+          {/* Header — car name + selector */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4, marginTop: 8 }}>
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.1 }}>
+                {activeCar.brand} {activeCar.model}
+              </div>
+              <div style={{ fontSize: 14, color: '#5c6070', marginTop: 6 }}>
+                {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
               </div>
             </div>
+            {cars.length > 1 && (
+              <select
+                value={activeCar.id}
+                onChange={e => {
+                  const car = cars.find(c => c.id === e.target.value)
+                  if (car) setActiveCar(car)
+                }}
+                style={{
+                  background: '#1e1d2e',
+                  color: '#f0f0f0',
+                  border: '0.5px solid rgba(255,255,255,0.10)',
+                  borderRadius: 10,
+                  padding: '6px 12px',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  outline: 'none',
+                  flexShrink: 0,
+                  marginTop: 4,
+                }}
+              >
+                {cars.map(c => (
+                  <option key={c.id} value={c.id}>{c.brand} {c.model}</option>
+                ))}
+              </select>
+            )}
           </div>
 
-          {/* Stats strip */}
+          {/* Car image — floats on background */}
+          <img
+            src="/car-placeholder.png"
+            alt="Auto"
+            style={{
+              width: '100%',
+              maxHeight: 220,
+              objectFit: 'contain',
+              display: 'block',
+              margin: '0 auto',
+              filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.6))',
+            }}
+          />
+
+          {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-            {[
-              {
-                label: 'Aktuální km',
-                value: mileage.toLocaleString('cs-CZ'),
-                unit: 'km',
-                sub: lastMileageRecord ? formatLastUpdate(lastMileageRecord.date) : null,
-              },
-              { label: 'Spotřeba', value: consumption > 0 ? consumption.toFixed(1) : '–', unit: 'l/100km', sub: null },
-              { label: 'Servis', value: serviceCount.toString(), unit: 'záznamů', sub: null },
-            ].map(stat => (
-              <div key={stat.label} style={{
-                flex: 1, background: '#1e1d2e', borderRadius: 12,
-                border: '0.5px solid rgba(255,255,255,0.06)',
-                padding: '12px 10px', textAlign: 'center' as const,
-              }}>
-                <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{stat.label}</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{stat.value}</div>
-                <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>{stat.unit}</div>
-                {stat.sub && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>{stat.sub}</div>}
-              </div>
-            ))}
+            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{mileage.toLocaleString('cs-CZ')}</div>
+              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>km</div>
+              {lastMileageRecord && (
+                <div style={{ fontSize: 11, color: '#5c6070', marginTop: 4, whiteSpace: 'nowrap' }}>
+                  {formatLastUpdate(lastMileageRecord.date)}
+                </div>
+              )}
+            </div>
+            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? consumption.toFixed(1) : '–'}</div>
+              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>l/100km</div>
+            </div>
+            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{serviceCount}</div>
+              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>záznamů</div>
+            </div>
           </div>
 
           {/* Reminders */}
           {urgentReminders.length > 0 && (
             <div style={{ marginBottom: 28 }}>
               <p style={sectionLabel}>Připomínky</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-                {urgentReminders.map(r => {
-                  const status = getReminderStatus(r, mileage)
-                  return (
-                    <div
-                      key={r.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                        background: '#1e1d2e',
-                        borderRadius: 14,
-                        border: '0.5px solid rgba(255,255,255,0.06)',
-                        padding: '12px 16px',
-                        marginBottom: 8,
-                      }}
-                    >
-                      <ReminderDot status={status} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
-                          {SERVICE_TYPE_LABELS[r.type]}
-                        </div>
-                        <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
-                          {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
-                          {r.nextServiceMileage && ` · ${formatMileage(r.nextServiceMileage)}`}
-                        </div>
+              {urgentReminders.map(r => {
+                const status = getReminderStatus(r, mileage)
+                return (
+                  <div
+                    key={r.id}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      background: '#1e1d2e', borderRadius: 14,
+                      border: '0.5px solid rgba(255,255,255,0.06)',
+                      padding: '12px 16px', marginBottom: 8,
+                    }}
+                  >
+                    <ReminderDot status={status} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0' }}>
+                        {SERVICE_TYPE_LABELS[r.type]}
                       </div>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: status === 'overdue' ? '#ef4444' : '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        {status === 'overdue' ? 'Prošlé' : 'Brzy'}
-                      </span>
+                      <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
+                        {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
+                        {r.nextServiceMileage && ` · ${formatMileage(r.nextServiceMileage)}`}
+                      </div>
                     </div>
-                  )
-                })}
-              </div>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: status === 'overdue' ? '#ef4444' : '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {status === 'overdue' ? 'Prošlé' : 'Brzy'}
+                    </span>
+                  </div>
+                )
+              })}
               <button
                 onClick={() => navigate('/service')}
                 style={{ fontSize: 13, color: '#6c63ff', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
@@ -260,7 +223,7 @@ export default function Dashboard() {
           {expiringDocs.length > 0 && (
             <div style={{ marginBottom: 28 }}>
               <div style={{
-                background: 'rgba(245,158,11,0.12)',
+                background: 'rgba(245,158,11,0.15)',
                 borderRadius: 14,
                 border: '0.5px solid rgba(245,158,11,0.3)',
                 padding: '14px 16px',
