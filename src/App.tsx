@@ -7,14 +7,18 @@ import Fuel from './pages/Fuel'
 import Documents from './pages/Documents'
 import Settings from './pages/Settings'
 import { FabProvider } from './context/FabContext'
+import IosBanner from './components/ui/IosBanner'
 import { applySeedIfEmpty } from './utils/seedData'
 import { cleanupDeletedRecords } from './utils/reminders'
 import { useServiceStore } from './stores/useServiceStore'
 import { useFuelStore } from './stores/useFuelStore'
 import { useDocumentStore } from './stores/useDocumentStore'
 import { saveServiceRecords, saveFuelRecords, saveDocuments } from './utils/storage'
+import { useNotifications } from './hooks/useNotifications'
 
 function AppInit() {
+  const { checkAndNotify } = useNotifications()
+
   useEffect(() => {
     applySeedIfEmpty()
 
@@ -38,7 +42,9 @@ function AppInit() {
       useDocumentStore.setState({ documents: cleanedDocs })
       saveDocuments(cleanedDocs)
     }
-  }, [])
+
+    checkAndNotify()
+  }, [checkAndNotify])
 
   return null
 }
@@ -57,6 +63,7 @@ export default function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
+        <IosBanner />
       </FabProvider>
     </BrowserRouter>
   )

@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import { useCarStore } from '../stores/useCarStore'
 import { useFab } from '../context/FabContext'
 import { useDriveBackup } from '../hooks/useDriveBackup'
+import { useNotifications } from '../hooks/useNotifications'
+import { useReminders } from '../hooks/useReminders'
 import { exportToJson, importFromJson } from '../utils/exportImport'
 import CarCard from '../components/cars/CarCard'
 
@@ -74,8 +76,11 @@ export default function Settings() {
   const cars = useCarStore(s => s.cars)
   const { openCarForm } = useFab()
   const drive = useDriveBackup()
+  const notifications = useNotifications()
+  const reminders = useReminders()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importError, setImportError] = useState<string | null>(null)
+  const [notifLoading, setNotifLoading] = useState(false)
 
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -178,6 +183,61 @@ export default function Settings() {
 
             {drive.error && (
               <p style={{ fontSize: 12, color: '#ef4444', marginTop: 10 }}>{drive.error}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Notifikace ── */}
+      <div style={{ marginBottom: 32 }}>
+        <p style={sectionLabel}>Notifikace</p>
+        <div style={card}>
+          <div style={{ padding: '16px 16px 20px' }}>
+            {!notifications.isSupported ? (
+              <div style={{ fontSize: 13, color: '#9a9da8', lineHeight: 1.5 }}>
+                Notifikace nejsou v tomto prohlížeči podporovány.{' '}
+                Na iOS přidej appku na plochu pro plnou podporu.
+              </div>
+            ) : notifications.permission === 'granted' ? (
+              <>
+                <div style={{ fontSize: 13, color: '#9a9da8', marginBottom: 16, lineHeight: 1.5 }}>
+                  Notifikace jsou povoleny. Připomenutí servisu ti přijdou jednou denně.
+                </div>
+                <ActionButton
+                  label={notifLoading ? 'Odesílám…' : 'Otestovat notifikaci'}
+                  onClick={async () => {
+                    setNotifLoading(true)
+                    await notifications.scheduleReminders(reminders)
+                    setNotifLoading(false)
+                  }}
+                  disabled={notifLoading || reminders.length === 0}
+                  variant="secondary"
+                />
+                {reminders.length === 0 && (
+                  <p style={{ fontSize: 12, color: '#5c6070', marginTop: 8 }}>
+                    Žádná připomenutí nejsou aktivní.
+                  </p>
+                )}
+              </>
+            ) : notifications.permission === 'denied' ? (
+              <div style={{ fontSize: 13, color: '#9a9da8', lineHeight: 1.5 }}>
+                Notifikace jsou blokovány. Povol je v nastavení prohlížeče.
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize: 13, color: '#9a9da8', marginBottom: 16, lineHeight: 1.5 }}>
+                  Povol notifikace pro automatické připomenutí servisu.
+                </div>
+                <ActionButton
+                  label="Povolit notifikace"
+                  onClick={async () => {
+                    setNotifLoading(true)
+                    await notifications.requestPermission()
+                    setNotifLoading(false)
+                  }}
+                  disabled={notifLoading}
+                />
+              </>
             )}
           </div>
         </div>
