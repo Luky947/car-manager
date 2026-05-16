@@ -134,6 +134,43 @@ export default function Dashboard() {
           <div style={{ marginBottom: 28 }}>
             <p style={sectionLabel}>Aktivní auto</p>
             <div style={{ background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '20px 20px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                <svg width="120" height="60" viewBox="0 0 240 120" fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ filter: 'drop-shadow(0 4px 16px rgba(108,99,255,0.3))' }}>
+                  <path d="M20 80 L20 65 Q22 55 35 48 L70 32 Q85 24 105 22 L145 22 Q165 22 178 30 L205 48 Q218 55 220 65 L220 80 Z"
+                    stroke="url(#carGradient)" strokeWidth="2.5"
+                    fill="rgba(108,99,255,0.08)" strokeLinejoin="round"/>
+                  <path d="M72 48 L88 28 Q100 22 120 22 L148 22 Q162 22 172 30 L190 48 Z"
+                    stroke="url(#carGradient)" strokeWidth="2"
+                    fill="rgba(79,158,255,0.12)" strokeLinejoin="round"/>
+                  <path d="M210 58 L218 62 L218 70 L208 70"
+                    stroke="#4f9eff" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M28 58 L20 62 L20 70 L30 70"
+                    stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
+                  <circle cx="175" cy="82" r="18" stroke="url(#carGradient)"
+                    strokeWidth="2.5" fill="rgba(108,99,255,0.06)"/>
+                  <circle cx="175" cy="82" r="8" stroke="url(#carGradient)"
+                    strokeWidth="1.5" fill="rgba(108,99,255,0.15)"/>
+                  <circle cx="68" cy="82" r="18" stroke="url(#carGradient)"
+                    strokeWidth="2.5" fill="rgba(108,99,255,0.06)"/>
+                  <circle cx="68" cy="82" r="8" stroke="url(#carGradient)"
+                    strokeWidth="1.5" fill="rgba(108,99,255,0.15)"/>
+                  <line x1="38" y1="80" x2="50" y2="80"
+                    stroke="url(#carGradient)" strokeWidth="2"/>
+                  <line x1="86" y1="80" x2="157" y2="80"
+                    stroke="url(#carGradient)" strokeWidth="2"/>
+                  <line x1="193" y1="80" x2="205" y2="80"
+                    stroke="url(#carGradient)" strokeWidth="2"/>
+                  <defs>
+                    <linearGradient id="carGradient" x1="0" y1="0"
+                      x2="240" y2="0" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#6c63ff"/>
+                      <stop offset="100%" stopColor="#4f9eff"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
               <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
                 {activeCar.brand} {activeCar.model}
               </div>
