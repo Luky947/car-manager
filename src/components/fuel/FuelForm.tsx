@@ -37,7 +37,7 @@ const inputStyle = {
   borderRadius: 12,
   padding: '14px 16px',
   fontSize: 16,
-  color: '#0f0e17',
+  color: '#0a0a0a',
   outline: 'none',
   fontFamily: 'inherit',
 } as const
@@ -283,7 +283,7 @@ export default function FuelForm({ record, isOpen, onClose }: Props) {
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#0f0e17' }}>Plná nádrž</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0a0a0a' }}>Plná nádrž</div>
               <div style={{ fontSize: 12, color: '#5c6070', marginTop: 2 }}>Pro výpočet spotřeby</div>
             </div>
             <button

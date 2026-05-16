@@ -70,7 +70,7 @@ export default function Fuel() {
             { label: 'Natankováno', value: totalLiters.toFixed(0), unit: 'l' },
           ].map(stat => (
             <div key={stat.label} style={{
-              flex: 1, background: '#1e1d2e', borderRadius: 12,
+              flex: 1, background: '#161616', borderRadius: 12,
               border: '0.5px solid rgba(255,255,255,0.06)',
               padding: '12px 10px', textAlign: 'center' as const,
             }}>
@@ -87,7 +87,7 @@ export default function Fuel() {
         <div style={{ textAlign: 'center', color: '#5c6070', padding: '40px 0' }}>Nejdřív přidej auto</div>
       ) : carRecords.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '60px 0' }}>
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#1e1d2e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5c6070" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16" /><path d="M3 22h12M14 10h2a2 2 0 012 2v3a1 1 0 001 1 1 1 0 001-1V8l-3-3" /><path d="M7 8h4M7 12h4" />
             </svg>

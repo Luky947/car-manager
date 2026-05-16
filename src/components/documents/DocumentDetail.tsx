@@ -64,7 +64,7 @@ export default function DocumentDetail({ doc, isOpen, onClose, onEdit }: Props) 
         <div style={{ background: '#f8f7ff', borderRadius: 14, padding: '4px 16px', marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
             <span style={{ fontSize: 13, color: '#5c6070' }}>Název</span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#0f0e17', maxWidth: '65%', textAlign: 'right' }}>{doc.title}</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#0a0a0a', maxWidth: '65%', textAlign: 'right' }}>{doc.title}</span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
@@ -82,14 +82,14 @@ export default function DocumentDetail({ doc, isOpen, onClose, onEdit }: Props) 
           {doc.notes && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '9px 0' }}>
               <span style={{ fontSize: 13, color: '#5c6070' }}>Poznámky</span>
-              <span style={{ fontSize: 14, color: '#0f0e17', maxWidth: '60%', textAlign: 'right' }}>{doc.notes}</span>
+              <span style={{ fontSize: 14, color: '#0a0a0a', maxWidth: '60%', textAlign: 'right' }}>{doc.notes}</span>
             </div>
           )}
         </div>
 
         {!confirmDelete ? (
           <div style={{ display: 'flex', gap: 12 }}>
-            <button type="button" onClick={() => onEdit(doc)} style={{ flex: 1, padding: 14, borderRadius: 14, background: '#f0f0f0', color: '#0f0e17', fontSize: 15, fontWeight: 600, touchAction: 'manipulation' }}>
+            <button type="button" onClick={() => onEdit(doc)} style={{ flex: 1, padding: 14, borderRadius: 14, background: '#f0f0f0', color: '#0a0a0a', fontSize: 15, fontWeight: 600, touchAction: 'manipulation' }}>
               Upravit
             </button>
             <button type="button" onClick={() => setConfirmDelete(true)} style={{ flex: 1, padding: 14, borderRadius: 14, background: 'transparent', border: '1.5px solid #ef4444', color: '#ef4444', fontSize: 15, fontWeight: 600, touchAction: 'manipulation' }}>
@@ -98,10 +98,10 @@ export default function DocumentDetail({ doc, isOpen, onClose, onEdit }: Props) 
           </div>
         ) : (
           <div style={{ background: 'rgba(239,68,68,0.06)', borderRadius: 14, padding: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#0f0e17', marginBottom: 4 }}>Smazat dokument?</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#0a0a0a', marginBottom: 4 }}>Smazat dokument?</div>
             <div style={{ fontSize: 13, color: '#5c6070', marginBottom: 16 }}>Tato akce je nevratná.</div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="button" onClick={() => setConfirmDelete(false)} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#f0f0f0', color: '#0f0e17', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Zrušit</button>
+              <button type="button" onClick={() => setConfirmDelete(false)} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#f0f0f0', color: '#0a0a0a', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Zrušit</button>
               <button type="button" onClick={handleDelete} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#ef4444', color: 'white', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Smazat</button>
             </div>
           </div>

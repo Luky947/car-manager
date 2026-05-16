@@ -41,7 +41,7 @@ const inputStyle = {
   borderRadius: 12,
   padding: '14px 16px',
   fontSize: 16,
-  color: '#0f0e17',
+  color: '#0a0a0a',
   outline: 'none',
   fontFamily: 'inherit',
 } as const
@@ -189,7 +189,7 @@ export default function ServiceForm({ record, isOpen, onClose }: Props) {
                   }}
                 >
                   <ServiceIcon type={t} size={18} color={active ? '#6c63ff' : '#9a9da8'} />
-                  <span style={{ fontSize: 12, fontWeight: active ? 600 : 400, color: active ? '#0f0e17' : '#5c6070', lineHeight: 1.3 }}>
+                  <span style={{ fontSize: 12, fontWeight: active ? 600 : 400, color: active ? '#0a0a0a' : '#5c6070', lineHeight: 1.3 }}>
                     {SERVICE_TYPE_LABELS[t]}
                   </span>
                 </button>
@@ -300,7 +300,7 @@ export default function ServiceForm({ record, isOpen, onClose }: Props) {
         <div style={{ marginBottom: form.reminderEnabled ? 16 : 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#0f0e17' }}>Připomínka</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0a0a0a' }}>Připomínka</div>
               <div style={{ fontSize: 12, color: '#5c6070', marginTop: 2 }}>Upozornit na příští servis</div>
             </div>
             <button

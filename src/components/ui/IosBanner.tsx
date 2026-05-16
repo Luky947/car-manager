@@ -25,7 +25,7 @@ export default function IosBanner() {
         bottom: 72,
         left: 16,
         right: 16,
-        background: '#1e1d2e',
+        background: '#161616',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 14,
         padding: '14px 16px',

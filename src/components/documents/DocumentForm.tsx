@@ -33,7 +33,7 @@ const inputStyle = {
   borderRadius: 12,
   padding: '14px 16px',
   fontSize: 16,
-  color: '#0f0e17',
+  color: '#0a0a0a',
   outline: 'none',
   fontFamily: 'inherit',
 } as const

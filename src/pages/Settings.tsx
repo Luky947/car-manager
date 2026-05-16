@@ -16,7 +16,7 @@ const sectionLabel: React.CSSProperties = {
 }
 
 const card: React.CSSProperties = {
-  background: '#1e1d2e',
+  background: '#161616',
   borderRadius: 14,
   border: '0.5px solid rgba(255,255,255,0.06)',
   overflow: 'hidden',

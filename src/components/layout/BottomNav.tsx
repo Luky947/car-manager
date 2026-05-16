@@ -92,7 +92,7 @@ export default function BottomNav() {
         left: 0,
         right: 0,
         height: 'calc(64px + env(safe-area-inset-bottom))',
-        background: '#13151a',
+        background: '#0d0d0d',
         borderTop: '0.5px solid rgba(255,255,255,0.06)',
         display: 'flex',
         alignItems: 'center',

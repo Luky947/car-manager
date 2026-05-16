@@ -67,7 +67,7 @@ export default function Dashboard() {
   if (cars.length === 0) {
     return (
       <div style={{ padding: '60px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, textAlign: 'center' }}>
-        <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#1e1d2e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5c6070" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M13 17l2 2 4-4M16 3h5v5M21 8v-5" />
             <path d="M7 17h2M14 9l2 2-4 4" />
@@ -121,7 +121,7 @@ export default function Dashboard() {
                   if (car) setActiveCar(car)
                 }}
                 style={{
-                  background: '#1e1d2e',
+                  background: '#161616',
                   color: '#f0f0f0',
                   border: '0.5px solid rgba(255,255,255,0.10)',
                   borderRadius: 10,
@@ -156,7 +156,7 @@ export default function Dashboard() {
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{mileage.toLocaleString('cs-CZ')}</div>
               <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>km</div>
@@ -166,12 +166,12 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? consumption.toFixed(1) : '–'}</div>
               <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>l/100km</div>
             </div>
-            <div style={{ flex: 1, background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
+            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{serviceCount}</div>
               <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>záznamů</div>
@@ -189,7 +189,7 @@ export default function Dashboard() {
                     key={r.id}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 12,
-                      background: '#1e1d2e', borderRadius: 14,
+                      background: '#161616', borderRadius: 14,
                       border: '0.5px solid rgba(255,255,255,0.06)',
                       padding: '12px 16px', marginBottom: 8,
                     }}

@@ -25,7 +25,7 @@ const rowStyle = {
 }
 
 const labelStyle = { fontSize: 13, color: '#5c6070', fontWeight: 500 }
-const valueStyle = { fontSize: 13, color: '#0f0e17', fontWeight: 500, textAlign: 'right' as const, maxWidth: '60%' }
+const valueStyle = { fontSize: 13, color: '#0a0a0a', fontWeight: 500, textAlign: 'right' as const, maxWidth: '60%' }
 
 export default function ServiceDetail({ record, isOpen, onClose, onEdit, currentMileage }: Props) {
   const softDeleteRecord = useServiceStore(s => s.softDeleteRecord)
@@ -54,13 +54,13 @@ export default function ServiceDetail({ record, isOpen, onClose, onEdit, current
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
           <div style={{
             width: 52, height: 52, borderRadius: 16,
-            background: 'rgba(108,99,255,0.1)',
+            background: 'rgba(255,255,255,0.06)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
             <ServiceIcon type={record.type} size={26} color="#e8e8e8" />
           </div>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#0f0e17' }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#0a0a0a' }}>
               {SERVICE_TYPE_LABELS[record.type]}
             </div>
             {record.reminderEnabled && status !== 'none' && (
@@ -131,7 +131,7 @@ export default function ServiceDetail({ record, isOpen, onClose, onEdit, current
         {/* Actions */}
         {confirmingDelete ? (
           <div style={{ background: 'rgba(239,68,68,0.06)', borderRadius: 16, border: '1px solid rgba(239,68,68,0.2)', padding: 16 }}>
-            <p style={{ fontSize: 14, color: '#0f0e17', marginBottom: 14, textAlign: 'center' as const }}>
+            <p style={{ fontSize: 14, color: '#0a0a0a', marginBottom: 14, textAlign: 'center' as const }}>
               Opravdu smazat tento záznam?
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -166,7 +166,7 @@ export default function ServiceDetail({ record, isOpen, onClose, onEdit, current
               onClick={() => onEdit(record)}
               style={{
                 flex: 1, padding: 14, borderRadius: 14, fontSize: 15, fontWeight: 600,
-                background: '#f0f0f5', color: '#0f0e17',
+                background: '#f0f0f5', color: '#0a0a0a',
                 border: '0.5px solid rgba(0,0,0,0.10)',
                 touchAction: 'manipulation',
               }}

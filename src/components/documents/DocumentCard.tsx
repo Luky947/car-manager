@@ -53,7 +53,7 @@ export default function DocumentCard({ doc, onPress }: Props) {
         alignItems: 'center',
         gap: 12,
         width: '100%',
-        background: '#1e1d2e',
+        background: '#161616',
         borderRadius: 14,
         border: '0.5px solid rgba(255,255,255,0.06)',
         padding: '14px 16px',
@@ -69,7 +69,7 @@ export default function DocumentCard({ doc, onPress }: Props) {
       {/* Icon */}
       <div style={{
         width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-        background: 'rgba(108,99,255,0.1)',
+        background: 'rgba(255,255,255,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <DocIcon type={doc.type} />

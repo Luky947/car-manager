@@ -31,13 +31,13 @@ function FabChoiceSheet() {
           }}
           onClick={handleService}
         >
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(108,99,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
             </svg>
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#0f0e17' }}>Přidat servis</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#0a0a0a' }}>Přidat servis</div>
             <div style={{ fontSize: 13, color: '#5c6070', marginTop: 2 }}>Servisní záznam nebo připomínku</div>
           </div>
         </button>
@@ -58,7 +58,7 @@ function FabChoiceSheet() {
             </svg>
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#0f0e17' }}>Přidat tankování</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#0a0a0a' }}>Přidat tankování</div>
             <div style={{ fontSize: 13, color: '#5c6070', marginTop: 2 }}>Záznam o tankování paliva</div>
           </div>
         </button>

@@ -40,7 +40,7 @@ function calcSegmentConsumption(record: FuelRecord, allRecords: FuelRecord[]): n
 const row = (label: string, value: React.ReactNode, last = false) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: last ? 'none' : '0.5px solid rgba(0,0,0,0.06)' }}>
     <span style={{ fontSize: 13, color: '#5c6070' }}>{label}</span>
-    <span style={{ fontSize: 14, fontWeight: 500, color: '#0f0e17' }}>{value}</span>
+    <span style={{ fontSize: 14, fontWeight: 500, color: '#0a0a0a' }}>{value}</span>
   </div>
 )
 
@@ -91,7 +91,7 @@ export default function FuelDetail({ record, allRecords, isOpen, onClose, onEdit
             <button
               type="button"
               onClick={() => onEdit(record)}
-              style={{ flex: 1, padding: 14, borderRadius: 14, background: '#f0f0f0', color: '#0f0e17', fontSize: 15, fontWeight: 600, touchAction: 'manipulation' }}
+              style={{ flex: 1, padding: 14, borderRadius: 14, background: '#f0f0f0', color: '#0a0a0a', fontSize: 15, fontWeight: 600, touchAction: 'manipulation' }}
             >
               Upravit
             </button>
@@ -105,10 +105,10 @@ export default function FuelDetail({ record, allRecords, isOpen, onClose, onEdit
           </div>
         ) : (
           <div style={{ background: 'rgba(239,68,68,0.06)', borderRadius: 14, padding: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#0f0e17', marginBottom: 4 }}>Smazat záznam?</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#0a0a0a', marginBottom: 4 }}>Smazat záznam?</div>
             <div style={{ fontSize: 13, color: '#5c6070', marginBottom: 16 }}>Tato akce je nevratná.</div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="button" onClick={() => setConfirmDelete(false)} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#f0f0f0', color: '#0f0e17', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Zrušit</button>
+              <button type="button" onClick={() => setConfirmDelete(false)} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#f0f0f0', color: '#0a0a0a', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Zrušit</button>
               <button type="button" onClick={handleDelete} style={{ flex: 1, padding: 12, borderRadius: 12, background: '#ef4444', color: 'white', fontSize: 14, fontWeight: 600, touchAction: 'manipulation' }}>Smazat</button>
             </div>
           </div>
