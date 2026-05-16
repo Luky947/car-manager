@@ -135,7 +135,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ padding: '0 20px 32px', WebkitOverflowScrolling: 'touch' }}>
+    <div style={{ paddingTop: 'env(safe-area-inset-top)', paddingLeft: 20, paddingRight: 20, paddingBottom: 32, WebkitOverflowScrolling: 'touch' }}>
 
       {activeCar && (
         <>
@@ -144,7 +144,7 @@ export default function Dashboard() {
             position: 'relative',
             width: '100vw',
             marginLeft: '-20px',
-            marginTop: '-20px',
+            marginTop: 'calc(-1 * env(safe-area-inset-top))',
             height: '320px',
             background: 'radial-gradient(ellipse at 50% 60%, #2e2e2e 0%, #1a1a1a 50%, #0a0a0a 100%)',
             overflow: 'hidden',
@@ -154,7 +154,7 @@ export default function Dashboard() {
             <div
               style={{
                 position: 'absolute',
-                top: 'calc(16px + env(safe-area-inset-top))',
+                top: 'calc(env(safe-area-inset-top) + 12px)',
                 left: '20px',
                 right: '20px',
                 zIndex: 2,
@@ -253,7 +253,7 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions 2×2 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
             {/* Add Service */}
             <button
               onClick={() => openServiceForm()}
@@ -262,12 +262,12 @@ export default function Dashboard() {
                 background: '#141414',
                 border: '0.5px solid rgba(255,255,255,0.07)',
                 borderRadius: 16,
-                padding: 16,
+                padding: '14px 16px',
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
+                flexDirection: 'row',
+                alignItems: 'center',
                 gap: 12,
-                aspectRatio: '1',
+                height: 64,
                 touchAction: 'manipulation',
               }}
             >
@@ -276,7 +276,7 @@ export default function Dashboard() {
                   <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Přidat servis</span>
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left' }}>Přidat servis</span>
             </button>
 
             {/* Add Fuel */}
@@ -287,12 +287,12 @@ export default function Dashboard() {
                 background: '#141414',
                 border: '0.5px solid rgba(255,255,255,0.07)',
                 borderRadius: 16,
-                padding: 16,
+                padding: '14px 16px',
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
+                flexDirection: 'row',
+                alignItems: 'center',
                 gap: 12,
-                aspectRatio: '1',
+                height: 64,
                 touchAction: 'manipulation',
               }}
             >
@@ -301,23 +301,23 @@ export default function Dashboard() {
                   <path d="M3 3h10v18H3z"/><path d="M13 7h2a2 2 0 012 2v3a2 2 0 002 2h0V7l-3-4"/><line x1="7" y1="8" x2="9" y2="8"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', textAlign: 'left' }}>Přidat tankování</span>
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left' }}>Přidat tankování</span>
             </button>
 
             {/* Reminders toggle */}
             <button
-              onClick={() => setRemindersOpen(o => !o)}
+              onClick={() => { setRemindersOpen(o => !o); if (!remindersOpen) setDocumentsOpen(false) }}
               className="pressable"
               style={{
                 background: remindersOpen ? '#f5f5f7' : '#141414',
                 border: `0.5px solid ${remindersOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
                 borderRadius: 16,
-                padding: 16,
+                padding: '14px 16px',
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
+                flexDirection: 'row',
+                alignItems: 'center',
                 gap: 12,
-                aspectRatio: '1',
+                height: 64,
                 touchAction: 'manipulation',
                 transition: 'background 150ms, border-color 150ms',
               }}
@@ -332,23 +332,23 @@ export default function Dashboard() {
                   <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: remindersOpen ? '#0a0a0a' : '#f0f0f0', textAlign: 'left', transition: 'color 150ms' }}>Připomínky</span>
+              <span style={{ fontSize: 14, fontWeight: 500, color: remindersOpen ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms' }}>Připomínky</span>
             </button>
 
             {/* Documents toggle */}
             <button
-              onClick={() => setDocumentsOpen(o => !o)}
+              onClick={() => { setDocumentsOpen(o => !o); if (!documentsOpen) setRemindersOpen(false) }}
               className="pressable"
               style={{
                 background: documentsOpen ? '#f5f5f7' : '#141414',
                 border: `0.5px solid ${documentsOpen ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
                 borderRadius: 16,
-                padding: 16,
+                padding: '14px 16px',
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
+                flexDirection: 'row',
+                alignItems: 'center',
                 gap: 12,
-                aspectRatio: '1',
+                height: 64,
                 touchAction: 'manipulation',
                 transition: 'background 150ms, border-color 150ms',
               }}
@@ -366,28 +366,26 @@ export default function Dashboard() {
                   <line x1="16" y1="17" x2="8" y2="17"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: documentsOpen ? '#0a0a0a' : '#f0f0f0', textAlign: 'left', transition: 'color 150ms' }}>Dokumenty</span>
+              <span style={{ fontSize: 14, fontWeight: 500, color: documentsOpen ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms' }}>Dokumenty</span>
             </button>
           </div>
 
           {/* Accordion — Reminders (white card) */}
           <div style={{
             overflow: 'hidden',
-            maxHeight: remindersOpen ? '500px' : '0px',
-            margin: remindersOpen ? '0 20px 24px' : '0 20px 0',
+            maxHeight: remindersOpen ? '600px' : '0px',
+            opacity: remindersOpen ? 1 : 0,
+            margin: remindersOpen ? '0 20px 16px' : '0 20px',
             transition: remindersOpen
-              ? 'max-height 420ms cubic-bezier(0.4,0,0.2,1)'
-              : 'max-height 320ms cubic-bezier(0.4,0,1,1)',
+              ? 'max-height 450ms cubic-bezier(0.4,0,0.2,1), opacity 300ms cubic-bezier(0.4,0,0.2,1) 50ms, margin 400ms cubic-bezier(0.4,0,0.2,1)'
+              : 'max-height 300ms cubic-bezier(0.4,0,1,1), opacity 200ms cubic-bezier(0.4,0,1,1), margin 400ms cubic-bezier(0.4,0,0.2,1)',
           }}>
             <div style={{
               background: '#f5f5f7',
               borderRadius: 20,
-              padding: 20,
-              opacity: remindersOpen ? 1 : 0,
-              transform: remindersOpen ? 'translateY(0)' : 'translateY(-8px)',
-              transition: remindersOpen
-                ? 'opacity 350ms cubic-bezier(0.4,0,0.2,1) 50ms, transform 350ms cubic-bezier(0.4,0,0.2,1) 50ms'
-                : 'opacity 200ms cubic-bezier(0.4,0,0.2,1), transform 200ms cubic-bezier(0.4,0,0.2,1)',
+              padding: '18px 16px',
+              transform: remindersOpen ? 'translateY(0)' : 'translateY(-12px)',
+              transition: 'transform 400ms cubic-bezier(0.34,1.2,0.64,1) 50ms',
             }}>
               <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9a9da8', margin: '0 0 12px' }}>Připomínky</p>
               {urgentReminders.length === 0 ? (
@@ -428,7 +426,7 @@ export default function Dashboard() {
                   <div style={{ marginTop: 12, textAlign: 'right' }}>
                     <button
                       onClick={() => navigate('/service')}
-                      style={{ fontSize: 13, color: '#6c63ff', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      style={{ fontSize: 13, color: '#0a0a0a', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                     >
                       Zobrazit vše →
                     </button>
@@ -441,21 +439,19 @@ export default function Dashboard() {
           {/* Accordion — Documents (white card) */}
           <div style={{
             overflow: 'hidden',
-            maxHeight: documentsOpen ? '500px' : '0px',
-            margin: documentsOpen ? '0 20px 24px' : '0 20px 0',
+            maxHeight: documentsOpen ? '600px' : '0px',
+            opacity: documentsOpen ? 1 : 0,
+            margin: documentsOpen ? '0 20px 16px' : '0 20px',
             transition: documentsOpen
-              ? 'max-height 420ms cubic-bezier(0.4,0,0.2,1)'
-              : 'max-height 320ms cubic-bezier(0.4,0,1,1)',
+              ? 'max-height 450ms cubic-bezier(0.4,0,0.2,1), opacity 300ms cubic-bezier(0.4,0,0.2,1) 50ms, margin 400ms cubic-bezier(0.4,0,0.2,1)'
+              : 'max-height 300ms cubic-bezier(0.4,0,1,1), opacity 200ms cubic-bezier(0.4,0,1,1), margin 400ms cubic-bezier(0.4,0,0.2,1)',
           }}>
             <div style={{
               background: '#f5f5f7',
               borderRadius: 20,
-              padding: 20,
-              opacity: documentsOpen ? 1 : 0,
-              transform: documentsOpen ? 'translateY(0)' : 'translateY(-8px)',
-              transition: documentsOpen
-                ? 'opacity 350ms cubic-bezier(0.4,0,0.2,1) 50ms, transform 350ms cubic-bezier(0.4,0,0.2,1) 50ms'
-                : 'opacity 200ms cubic-bezier(0.4,0,0.2,1), transform 200ms cubic-bezier(0.4,0,0.2,1)',
+              padding: '18px 16px',
+              transform: documentsOpen ? 'translateY(0)' : 'translateY(-12px)',
+              transition: 'transform 400ms cubic-bezier(0.34,1.2,0.64,1) 50ms',
             }}>
               <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9a9da8', margin: '0 0 12px' }}>Dokumenty</p>
               {allDocs.length === 0 ? (
@@ -483,7 +479,7 @@ export default function Dashboard() {
                   <div style={{ marginTop: 12, textAlign: 'right' }}>
                     <button
                       onClick={() => navigate('/documents')}
-                      style={{ fontSize: 13, color: '#6c63ff', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      style={{ fontSize: 13, color: '#0a0a0a', fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                     >
                       Zobrazit vše →
                     </button>

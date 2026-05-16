@@ -325,8 +325,8 @@ export default function FuelForm({ record, isOpen, onClose }: Props) {
           onClick={handleSubmit}
           style={{
             width: '100%',
-            background: 'linear-gradient(135deg, #4f9eff, #6c63ff)',
-            color: 'white', borderRadius: 14, padding: 16,
+            background: '#0a0a0a',
+            color: '#f0f0f0', borderRadius: 14, padding: 16,
             fontSize: 16, fontWeight: 600, touchAction: 'manipulation',
           }}
         >
