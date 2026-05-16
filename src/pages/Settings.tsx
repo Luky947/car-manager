@@ -3,7 +3,6 @@ import { useCarStore } from '../stores/useCarStore'
 import { useFab } from '../context/FabContext'
 import { useDriveBackup } from '../hooks/useDriveBackup'
 import { useNotifications } from '../hooks/useNotifications'
-import { useReminders } from '../hooks/useReminders'
 import { exportToJson, importFromJson } from '../utils/exportImport'
 import CarCard from '../components/cars/CarCard'
 
@@ -76,11 +75,9 @@ export default function Settings() {
   const cars = useCarStore(s => s.cars)
   const { openCarForm } = useFab()
   const drive = useDriveBackup()
-  const notifications = useNotifications()
-  const reminders = useReminders()
+  const { permission, isSupported, requestPermission } = useNotifications()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importError, setImportError] = useState<string | null>(null)
-  const [notifLoading, setNotifLoading] = useState(false)
 
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -190,56 +187,69 @@ export default function Settings() {
 
       {/* ── Notifikace ── */}
       <div style={{ marginBottom: 32 }}>
-        <p style={sectionLabel}>Notifikace</p>
-        <div style={card}>
-          <div style={{ padding: '16px 16px 20px' }}>
-            {!notifications.isSupported ? (
-              <div style={{ fontSize: 13, color: '#9a9da8', lineHeight: 1.5 }}>
-                Notifikace nejsou v tomto prohlížeči podporovány.{' '}
-                Na iOS přidej appku na plochu pro plnou podporu.
-              </div>
-            ) : notifications.permission === 'granted' ? (
-              <>
-                <div style={{ fontSize: 13, color: '#9a9da8', marginBottom: 16, lineHeight: 1.5 }}>
-                  Notifikace jsou povoleny. Připomenutí servisu ti přijdou jednou denně.
-                </div>
-                <ActionButton
-                  label={notifLoading ? 'Odesílám…' : 'Otestovat notifikaci'}
-                  onClick={async () => {
-                    setNotifLoading(true)
-                    await notifications.scheduleReminders(reminders)
-                    setNotifLoading(false)
-                  }}
-                  disabled={notifLoading || reminders.length === 0}
-                  variant="secondary"
-                />
-                {reminders.length === 0 && (
-                  <p style={{ fontSize: 12, color: '#5c6070', marginTop: 8 }}>
-                    Žádná připomenutí nejsou aktivní.
-                  </p>
-                )}
-              </>
-            ) : notifications.permission === 'denied' ? (
-              <div style={{ fontSize: 13, color: '#9a9da8', lineHeight: 1.5 }}>
-                Notifikace jsou blokovány. Povol je v nastavení prohlížeče.
-              </div>
-            ) : (
-              <>
-                <div style={{ fontSize: 13, color: '#9a9da8', marginBottom: 16, lineHeight: 1.5 }}>
-                  Povol notifikace pro automatické připomenutí servisu.
-                </div>
-                <ActionButton
-                  label="Povolit notifikace"
-                  onClick={async () => {
-                    setNotifLoading(true)
-                    await notifications.requestPermission()
-                    setNotifLoading(false)
-                  }}
-                  disabled={notifLoading}
-                />
-              </>
-            )}
-          </div>
+        <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text3)', marginBottom: 12 }}>
+          NOTIFIKACE
+        </p>
+        <div style={{ background: 'var(--bg3)', borderRadius: 14, border: '0.5px solid var(--border)', padding: '14px 16px' }}>
+          {!isSupported && (
+            <>
+              <p style={{ color: 'var(--text2)', fontSize: 14 }}>
+                Push notifikace nejsou podporovány v tomto prohlížeči.
+              </p>
+              <p style={{ color: 'var(--text3)', fontSize: 13, marginTop: 8 }}>
+                Na iOS přidej appku na plochu: Sdílet → Přidat na plochu
+              </p>
+            </>
+          )}
+          {isSupported && permission === 'default' && (
+            <>
+              <p style={{ color: 'var(--text2)', fontSize: 14, marginBottom: 12 }}>
+                Povol notifikace pro upozornění na blížící se servis.
+              </p>
+              <button
+                type="button"
+                onClick={requestPermission}
+                style={{
+                  width: '100%', padding: '14px 16px', borderRadius: 14, fontSize: 15, fontWeight: 600,
+                  background: 'transparent', color: 'var(--accent)', border: '1.5px solid var(--accent)',
+                  touchAction: 'manipulation', cursor: 'pointer',
+                }}
+              >
+                Povolit notifikace
+              </button>
+            </>
+          )}
+          {isSupported && permission === 'granted' && (
+            <>
+              <p style={{ color: 'var(--green)', fontSize: 14, marginBottom: 12 }}>
+                Notifikace jsou povoleny ✓
+              </p>
+              <button
+                type="button"
+                onClick={() => new Notification('Car Manager', {
+                  body: 'Notifikace fungují správně 🎉',
+                  icon: '/icon-192.png',
+                })}
+                style={{
+                  width: '100%', padding: '14px 16px', borderRadius: 14, fontSize: 15, fontWeight: 600,
+                  background: 'transparent', color: 'var(--accent)', border: '1.5px solid var(--accent)',
+                  touchAction: 'manipulation', cursor: 'pointer',
+                }}
+              >
+                Testovat notifikaci
+              </button>
+            </>
+          )}
+          {isSupported && permission === 'denied' && (
+            <>
+              <p style={{ color: 'var(--red)', fontSize: 14, marginBottom: 8 }}>
+                Notifikace jsou zakázány.
+              </p>
+              <p style={{ color: 'var(--text3)', fontSize: 13 }}>
+                Povol je v nastavení prohlížeče → Nastavení → Notifikace
+              </p>
+            </>
+          )}
         </div>
       </div>
 
