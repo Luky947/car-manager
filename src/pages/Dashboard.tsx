@@ -136,53 +136,61 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 32px', WebkitOverflowScrolling: 'touch' }}>
+    <div style={{ padding: '0 20px 32px', WebkitOverflowScrolling: 'touch' }}>
 
       {activeCar && (
         <>
-          {/* Header — car name + cycle on tap */}
-          <div
-            style={{ marginBottom: 0, marginTop: 8, cursor: cars.length > 1 ? 'pointer' : 'default' }}
-            onClick={() => {
-              if (cars.length <= 1) return
-              const idx = cars.findIndex(c => c.id === activeCar.id)
-              setActiveCar(cars[(idx + 1) % cars.length])
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 24, fontWeight: 700, color: '#f0f0f0', letterSpacing: '-0.02em', margin: '0 0 2px' }}>
-                {activeCar.brand} {activeCar.model}
-              </span>
-              {cars.length > 1 && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              )}
-            </div>
-            <div style={{ fontSize: 13, color: '#555', margin: 0 }}>
-              {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
-            </div>
-          </div>
-
-          {/* Hero — car on radial gradient spotlight */}
+          {/* Hero — full bleed with car name inside */}
           <div style={{
             position: 'relative',
             width: '100vw',
             marginLeft: '-20px',
-            height: '260px',
-            background: 'radial-gradient(ellipse at 50% 70%, #2e2e2e 0%, #1a1a1a 45%, #0a0a0a 100%)',
+            marginTop: '-20px',
+            height: '320px',
+            background: 'radial-gradient(ellipse at 50% 60%, #2e2e2e 0%, #1a1a1a 50%, #0a0a0a 100%)',
             overflow: 'hidden',
             marginBottom: '24px',
           }}>
+            {/* Car name */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 'calc(16px + env(safe-area-inset-top))',
+                left: '20px',
+                right: '20px',
+                zIndex: 2,
+                cursor: cars.length > 1 ? 'pointer' : 'default',
+              }}
+              onClick={() => {
+                if (cars.length <= 1) return
+                const idx = cars.findIndex(c => c.id === activeCar.id)
+                setActiveCar(cars[(idx + 1) % cars.length])
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <p style={{ fontSize: 26, fontWeight: 700, color: '#f0f0f0', margin: '0 0 2px', letterSpacing: '-0.02em' }}>
+                  {activeCar.brand} {activeCar.model}
+                </p>
+                {cars.length > 1 && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                )}
+              </div>
+              <p style={{ fontSize: 13, color: '#666', margin: 0 }}>
+                {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
+              </p>
+            </div>
+
             {/* Spotlight */}
             <div style={{
               position: 'absolute',
-              bottom: 0,
+              bottom: '10px',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: '80%',
-              height: '60px',
-              background: 'radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%)',
+              width: '70%',
+              height: '40px',
+              background: 'radial-gradient(ellipse, rgba(255,255,255,0.06) 0%, transparent 70%)',
               pointerEvents: 'none',
             }} />
 
@@ -193,15 +201,15 @@ export default function Dashboard() {
               onClick={() => setCarDetailOpen(true)}
               style={{
                 position: 'absolute',
-                bottom: '-10px',
+                bottom: '-20px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: '110%',
-                maxWidth: '420px',
-                height: '220px',
+                width: '115%',
+                maxWidth: '440px',
+                height: '240px',
                 objectFit: 'contain',
                 cursor: 'pointer',
-                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.8))',
+                filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.9))',
                 transition: 'transform 150ms cubic-bezier(0.2,0,0,1)',
               }}
               onPointerDown={e => (e.currentTarget.style.transform = 'translateX(-50%) scale(0.97)')}
