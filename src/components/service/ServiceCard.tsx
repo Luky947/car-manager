@@ -39,10 +39,10 @@ export default function ServiceCard({ record, currentMileage, onPress }: Props) 
       {/* Icon */}
       <div style={{
         width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-        background: 'rgba(108,99,255,0.1)',
+        background: 'rgba(255,255,255,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <ServiceIcon type={record.type} size={20} color="#6c63ff" />
+        <ServiceIcon type={record.type} size={20} color="#e8e8e8" />
       </div>
 
       {/* Content */}

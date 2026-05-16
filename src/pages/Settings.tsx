@@ -44,14 +44,14 @@ function ActionButton({
     opacity: disabled ? 0.5 : 1,
     transition: 'opacity 150ms',
     ...(variant === 'primary' && {
-      background: 'linear-gradient(135deg, #6c63ff, #4f9eff)',
-      color: 'white',
+      background: '#e8e8e8',
+      color: '#0a0a0a',
       border: 'none',
     }),
     ...(variant === 'secondary' && {
       background: 'transparent',
-      color: '#6c63ff',
-      border: '1.5px solid #6c63ff',
+      color: '#e8e8e8',
+      border: '1.5px solid #e8e8e8',
     }),
     ...(variant === 'danger' && {
       background: 'transparent',
@@ -118,7 +118,7 @@ export default function Settings() {
             width: '100%', background: 'transparent',
             border: '1px dashed rgba(255,255,255,0.15)',
             borderRadius: 14, padding: '14px 16px',
-            fontSize: 14, fontWeight: 500, color: '#6c63ff',
+            fontSize: 14, fontWeight: 500, color: '#e8e8e8',
             touchAction: 'manipulation', cursor: 'pointer',
             transition: 'opacity 150ms',
           }}
@@ -126,7 +126,7 @@ export default function Settings() {
           onPointerUp={e => (e.currentTarget.style.opacity = '1')}
           onPointerLeave={e => (e.currentTarget.style.opacity = '1')}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" strokeWidth="2" strokeLinecap="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="2" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Přidat auto
@@ -268,7 +268,7 @@ export default function Settings() {
                   onClick={exportToJson}
                   style={{
                     flex: 1, padding: '12px 8px', borderRadius: 12, fontSize: 13, fontWeight: 600,
-                    background: 'linear-gradient(135deg, #6c63ff, #4f9eff)', color: 'white',
+                    background: '#e8e8e8', color: '#0a0a0a',
                     touchAction: 'manipulation',
                   }}
                 >
@@ -279,7 +279,7 @@ export default function Settings() {
                   onClick={() => fileInputRef.current?.click()}
                   style={{
                     flex: 1, padding: '12px 8px', borderRadius: 12, fontSize: 13, fontWeight: 600,
-                    background: 'transparent', color: '#6c63ff', border: '1.5px solid #6c63ff',
+                    background: 'transparent', color: '#e8e8e8', border: '1.5px solid #e8e8e8',
                     touchAction: 'manipulation',
                   }}
                 >

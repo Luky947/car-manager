@@ -2,31 +2,33 @@
 
 :root {
   /* Dark layers */
-  --bg: #0f0e17;
-  --bg2: #1a1928;
-  --bg3: #1e1d2e;
-  --bg4: #252438;
-  --border: rgba(255, 255, 255, 0.06);
+  --bg:  #0a0a0a;
+  --bg2: #111111;
+  --bg3: #161616;
+  --bg4: #1c1c1c;
+  --border:  rgba(255, 255, 255, 0.06);
   --border2: rgba(255, 255, 255, 0.10);
-  --text: #f0f0f0;
-  --text2: #9a9da8;
-  --text3: #5c6070;
-
-  /* Light layers */
-  --sheet-bg: #f5f5f7;
-  --sheet-bg2: #ffffff;
-  --sheet-border: rgba(0, 0, 0, 0.08);
-  --sheet-text: #0f0e17;
-  --sheet-text2: #5c6070;
-  --sheet-text3: #9a9da8;
+  --text:  #f0f0f0;
+  --text2: #888888;
+  --text3: #444444;
 
   /* Accents */
-  --accent: #6c63ff;
-  --accent2: #4f9eff;
-  --gradient: linear-gradient(135deg, #6c63ff, #4f9eff);
+  --accent:   #e8e8e8;
+  --accent2:  #aaaaaa;
+  --gradient: linear-gradient(135deg, #e8e8e8, #aaaaaa);
+
+  /* Functional */
   --green: #22c55e;
   --amber: #f59e0b;
-  --red: #ef4444;
+  --red:   #ef4444;
+
+  /* Light layers (sheets/forms — stay light) */
+  --sheet-bg:     #f5f5f7;
+  --sheet-bg2:    #ffffff;
+  --sheet-border: rgba(0, 0, 0, 0.08);
+  --sheet-text:   #0a0a0a;
+  --sheet-text2:  #5c6070;
+  --sheet-text3:  #9a9da8;
 }
 
 *, *::before, *::after {

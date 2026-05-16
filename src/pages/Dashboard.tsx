@@ -83,8 +83,8 @@ export default function Dashboard() {
         <button
           onClick={() => openCarForm()}
           style={{
-            background: 'linear-gradient(135deg, #6c63ff, #4f9eff)',
-            color: 'white',
+            background: '#e8e8e8',
+            color: '#0a0a0a',
             borderRadius: 14,
             padding: '14px 32px',
             fontSize: 16,
@@ -212,7 +212,7 @@ export default function Dashboard() {
               })}
               <button
                 onClick={() => navigate('/service')}
-                style={{ fontSize: 13, color: '#6c63ff', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
+                style={{ fontSize: 13, color: '#e8e8e8', fontWeight: 500, padding: '4px 0', marginTop: 4, background: 'none', border: 'none', cursor: 'pointer' }}
               >
                 Zobrazit vše →
               </button>

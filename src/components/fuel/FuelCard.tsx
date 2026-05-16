@@ -35,7 +35,7 @@ export default function FuelCard({ record, onPress }: Props) {
         background: 'rgba(79,158,255,0.1)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f9eff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16" />
           <path d="M3 22h12M14 10h2a2 2 0 012 2v3a1 1 0 001 1 1 1 0 001-1V8l-3-3" />
           <path d="M7 8h4M7 12h4" />

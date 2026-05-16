@@ -57,7 +57,7 @@ export default function ServiceDetail({ record, isOpen, onClose, onEdit, current
             background: 'rgba(108,99,255,0.1)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-            <ServiceIcon type={record.type} size={26} color="#6c63ff" />
+            <ServiceIcon type={record.type} size={26} color="#e8e8e8" />
           </div>
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#0f0e17' }}>

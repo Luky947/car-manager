@@ -4,7 +4,7 @@ const styles: Record<BadgeColor, { background: string; color: string }> = {
   green: { background: 'rgba(34,197,94,0.15)', color: '#22c55e' },
   amber: { background: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
   red: { background: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  purple: { background: 'rgba(108,99,255,0.15)', color: '#6c63ff' },
+  purple: { background: 'rgba(255,255,255,0.08)', color: '#e8e8e8' },
   default: { background: 'rgba(255,255,255,0.08)', color: '#9a9da8' },
 }
 
@@ -26,6 +26,7 @@ export default function Badge({ label, color = 'default' }: Props) {
         padding: '3px 8px',
         borderRadius: 20,
         whiteSpace: 'nowrap',
+        border: '0.5px solid rgba(255,255,255,0.15)',
       }}
     >
       {label}

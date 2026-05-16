@@ -143,8 +143,8 @@ export default function Service() {
               type="button"
               onClick={() => openServiceForm()}
               style={{
-                background: 'linear-gradient(135deg, #6c63ff, #4f9eff)',
-                color: 'white', borderRadius: 14, padding: '12px 28px',
+                background: '#e8e8e8',
+                color: '#0a0a0a', borderRadius: 14, padding: '12px 28px',
                 fontSize: 15, fontWeight: 600, touchAction: 'manipulation',
               }}
             >

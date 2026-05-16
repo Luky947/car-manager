@@ -90,7 +90,7 @@ export default function Documents() {
               type="button"
               onClick={() => openDocumentForm()}
               style={{
-                background: 'linear-gradient(135deg, #6c63ff, #4f9eff)',
+                background: '#e8e8e8',
                 color: 'white', borderRadius: 14, padding: '12px 28px',
                 fontSize: 15, fontWeight: 600, touchAction: 'manipulation',
               }}

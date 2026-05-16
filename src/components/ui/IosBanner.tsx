@@ -36,7 +36,7 @@ export default function IosBanner() {
         boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
       }}
     >
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
         <path d="M12 2v13M8 7l4-5 4 5" />
         <path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-7" />
       </svg>

@@ -100,7 +100,7 @@ export default function Fuel() {
             type="button"
             onClick={() => openFuelForm()}
             style={{
-              background: 'linear-gradient(135deg, #4f9eff, #6c63ff)',
+              background: '#e8e8e8',
               color: 'white', borderRadius: 14, padding: '12px 28px',
               fontSize: 15, fontWeight: 600, touchAction: 'manipulation',
             }}

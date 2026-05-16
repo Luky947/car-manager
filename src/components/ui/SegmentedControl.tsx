@@ -14,7 +14,7 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
     <div
       style={{
         display: 'flex',
-        background: '#1e1d2e',
+        background: 'var(--bg3)',
         borderRadius: 12,
         padding: 4,
         gap: 2,
@@ -33,8 +33,8 @@ export default function SegmentedControl({ options, value, onChange }: Props) {
               borderRadius: 10,
               fontSize: 12,
               fontWeight: active ? 600 : 400,
-              color: active ? '#ffffff' : '#9a9da8',
-              background: active ? 'linear-gradient(135deg, #6c63ff, #4f9eff)' : 'transparent',
+              color: active ? '#0a0a0a' : '#888888',
+              background: active ? '#e8e8e8' : 'transparent',
               transition: 'all 150ms ease',
               touchAction: 'manipulation',
               whiteSpace: 'nowrap',

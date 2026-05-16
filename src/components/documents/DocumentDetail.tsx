@@ -69,7 +69,7 @@ export default function DocumentDetail({ doc, isOpen, onClose, onEdit }: Props) 
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
             <span style={{ fontSize: 13, color: '#5c6070' }}>Typ</span>
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#6c63ff', background: 'rgba(108,99,255,0.1)', borderRadius: 6, padding: '2px 8px' }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#e8e8e8', background: 'rgba(255,255,255,0.08)', borderRadius: 6, padding: '2px 8px' }}>
               {docTypeLabel[doc.type]}
             </span>
           </div>

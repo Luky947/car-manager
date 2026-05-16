@@ -6,7 +6,7 @@ interface Props {
   color?: string
 }
 
-export default function ServiceIcon({ type, size = 20, color = '#6c63ff' }: Props) {
+export default function ServiceIcon({ type, size = 20, color = '#e8e8e8' }: Props) {
   const p = {
     width: size, height: size, viewBox: '0 0 24 24',
     fill: 'none', stroke: color, strokeWidth: 1.5,

@@ -15,12 +15,12 @@ const docTypeLabel: Record<Document['type'], string> = {
 }
 
 function DocIcon({ type }: { type: Document['type'] }) {
-  const p = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: '#6c63ff', strokeWidth: 1.5, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+  const p = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: '#e8e8e8', strokeWidth: 1.5, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
   switch (type) {
     case 'insurance':
       return <svg {...p}><path d="M12 2 L4 6v6c0 5 4 9 8 10c4-1 8-5 8-10V6L12 2z"/></svg>
     case 'registration':
-      return <svg {...p}><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><circle cx="16" cy="16" r="1" fill="#6c63ff" stroke="none"/></svg>
+      return <svg {...p}><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><circle cx="16" cy="16" r="1" fill="#e8e8e8" stroke="none"/></svg>
     case 'warranty':
       return <svg {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
     case 'invoice':
