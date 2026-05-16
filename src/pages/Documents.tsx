@@ -53,10 +53,10 @@ export default function Documents() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 20px' }}>
+    <div style={{ padding: '56px 20px 20px', WebkitOverflowScrolling: 'touch' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0' }}>Dokumenty</h1>
+        <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', color: '#f0f0f0' }}>Dokumenty</h1>
         {carDocs.length > 0 && (
           <span style={{ fontSize: 13, color: '#5c6070' }}>{carDocs.length} dokumentů</span>
         )}
@@ -91,7 +91,7 @@ export default function Documents() {
               onClick={() => openDocumentForm()}
               style={{
                 background: '#e8e8e8',
-                color: 'white', borderRadius: 14, padding: '12px 28px',
+                color: '#0a0a0a', borderRadius: 14, padding: '12px 28px',
                 fontSize: 15, fontWeight: 600, touchAction: 'manipulation',
               }}
             >

@@ -9,16 +9,15 @@ import CarCard from '../components/cars/CarCard'
 const sectionLabel: React.CSSProperties = {
   fontSize: 11,
   textTransform: 'uppercase',
-  letterSpacing: '0.08em',
-  color: '#5c6070',
-  marginBottom: 12,
-  fontWeight: 500,
+  letterSpacing: '0.1em',
+  color: '#444',
+  marginBottom: 10,
 }
 
 const card: React.CSSProperties = {
-  background: '#161616',
-  borderRadius: 14,
-  border: '0.5px solid rgba(255,255,255,0.06)',
+  background: '#141414',
+  borderRadius: 16,
+  border: '0.5px solid rgba(255,255,255,0.07)',
   overflow: 'hidden',
   marginBottom: 8,
 }
@@ -49,9 +48,9 @@ function ActionButton({
       border: 'none',
     }),
     ...(variant === 'secondary' && {
-      background: 'transparent',
-      color: '#e8e8e8',
-      border: '1.5px solid #e8e8e8',
+      background: '#1e1e1e',
+      color: '#f0f0f0',
+      border: '0.5px solid rgba(255,255,255,0.12)',
     }),
     ...(variant === 'danger' && {
       background: 'transparent',
@@ -101,8 +100,8 @@ export default function Settings() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 40px' }}>
-      <h1 style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', marginBottom: 28 }}>Nastavení</h1>
+    <div style={{ padding: '56px 20px 40px', WebkitOverflowScrolling: 'touch' }}>
+      <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', color: '#f0f0f0', marginBottom: 28 }}>Nastavení</h1>
 
       {/* ── Auta ── */}
       <div style={{ marginBottom: 32 }}>
@@ -187,10 +186,8 @@ export default function Settings() {
 
       {/* ── Notifikace ── */}
       <div style={{ marginBottom: 32 }}>
-        <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text3)', marginBottom: 12 }}>
-          NOTIFIKACE
-        </p>
-        <div style={{ background: 'var(--bg3)', borderRadius: 14, border: '0.5px solid var(--border)', padding: '14px 16px' }}>
+        <p style={sectionLabel}>Notifikace</p>
+        <div style={{ background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.07)', padding: '14px 16px' }}>
           {!isSupported && (
             <>
               <p style={{ color: 'var(--text2)', fontSize: 14 }}>

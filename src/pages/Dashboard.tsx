@@ -17,10 +17,9 @@ import CarDetail from '../components/cars/CarDetail'
 const sectionLabel: React.CSSProperties = {
   fontSize: 11,
   textTransform: 'uppercase',
-  letterSpacing: '0.08em',
-  color: '#5c6070',
-  marginBottom: 12,
-  fontWeight: 500,
+  letterSpacing: '0.1em',
+  color: '#444',
+  marginBottom: 10,
 }
 
 export default function Dashboard() {
@@ -102,45 +101,32 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 32px' }}>
+    <div style={{ padding: '56px 20px 32px', WebkitOverflowScrolling: 'touch' }}>
 
       {activeCar && (
         <>
-          {/* Header — car name + selector */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4, marginTop: 8 }}>
-            <div>
-              <div style={{ fontSize: 28, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.1 }}>
+          {/* Header — car name + cycle on tap */}
+          <div
+            style={{ marginBottom: 4, marginTop: 8, cursor: cars.length > 1 ? 'pointer' : 'default' }}
+            onClick={() => {
+              if (cars.length <= 1) return
+              const idx = cars.findIndex(c => c.id === activeCar.id)
+              setActiveCar(cars[(idx + 1) % cars.length])
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 28, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.1 }}>
                 {activeCar.brand} {activeCar.model}
-              </div>
-              <div style={{ fontSize: 14, color: '#5c6070', marginTop: 6 }}>
-                {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
-              </div>
+              </span>
+              {cars.length > 1 && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              )}
             </div>
-            {cars.length > 1 && (
-              <select
-                value={activeCar.id}
-                onChange={e => {
-                  const car = cars.find(c => c.id === e.target.value)
-                  if (car) setActiveCar(car)
-                }}
-                style={{
-                  background: '#161616',
-                  color: '#f0f0f0',
-                  border: '0.5px solid rgba(255,255,255,0.10)',
-                  borderRadius: 10,
-                  padding: '6px 12px',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  outline: 'none',
-                  flexShrink: 0,
-                  marginTop: 4,
-                }}
-              >
-                {cars.map(c => (
-                  <option key={c.id} value={c.id}>{c.brand} {c.model}</option>
-                ))}
-              </select>
-            )}
+            <div style={{ fontSize: 14, color: '#5c6070', marginTop: 6 }}>
+              {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
+            </div>
           </div>
 
           {/* Car image — floats on background, tap to open detail */}
@@ -165,25 +151,25 @@ export default function Dashboard() {
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{mileage.toLocaleString('cs-CZ')}</div>
-              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>km</div>
+            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{mileage.toLocaleString('cs-CZ')}</div>
+              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>km</div>
               {lastMileageRecord && (
-                <div style={{ fontSize: 11, color: '#5c6070', marginTop: 4, whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 11, color: '#555', marginTop: 4, whiteSpace: 'nowrap' }}>
                   {formatLastUpdate(lastMileageRecord.date)}
                 </div>
               )}
             </div>
-            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? consumption.toFixed(1) : '–'}</div>
-              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>l/100km</div>
+            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? consumption.toFixed(1) : '–'}</div>
+              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>l/100km</div>
             </div>
-            <div style={{ flex: 1, background: '#161616', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '12px 10px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{serviceCount}</div>
-              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>záznamů</div>
+            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
+              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{serviceCount}</div>
+              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>záznamů</div>
             </div>
           </div>
 
@@ -198,9 +184,9 @@ export default function Dashboard() {
                     key={r.id}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 12,
-                      background: '#161616', borderRadius: 14,
-                      border: '0.5px solid rgba(255,255,255,0.06)',
-                      padding: '12px 16px', marginBottom: 8,
+                      background: '#141414', borderRadius: 16,
+                      border: '0.5px solid rgba(255,255,255,0.07)',
+                      padding: '14px 16px', marginBottom: 8,
                     }}
                   >
                     <ReminderDot status={status} />

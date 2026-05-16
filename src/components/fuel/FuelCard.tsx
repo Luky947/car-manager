@@ -16,23 +16,22 @@ export default function FuelCard({ record, onPress }: Props) {
         alignItems: 'center',
         gap: 12,
         width: '100%',
-        background: '#161616',
-        borderRadius: 14,
-        border: '0.5px solid rgba(255,255,255,0.06)',
-        padding: '14px 16px',
+        background: '#141414',
+        borderRadius: 16,
+        border: '0.5px solid rgba(255,255,255,0.07)',
+        padding: 16,
         marginBottom: 8,
         touchAction: 'manipulation',
         textAlign: 'left',
         transition: 'transform 100ms',
       }}
-      onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.98)')}
+      onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.99)')}
       onPointerUp={e => (e.currentTarget.style.transform = '')}
       onPointerLeave={e => (e.currentTarget.style.transform = '')}
     >
       {/* Icon */}
       <div style={{
-        width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-        background: 'rgba(79,158,255,0.1)',
+        flexShrink: 0, background: '#1e1e1e', borderRadius: 10, padding: 8,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -65,6 +64,7 @@ export default function FuelCard({ record, onPress }: Props) {
           <span style={{
             fontSize: 10, fontWeight: 600, color: '#22c55e',
             background: 'rgba(34,197,94,0.12)',
+            border: '0.5px solid rgba(34,197,94,0.2)',
             borderRadius: 6, padding: '2px 7px',
             textTransform: 'uppercase', letterSpacing: '0.04em',
           }}>

@@ -23,23 +23,22 @@ export default function ServiceCard({ record, currentMileage, onPress }: Props) 
         alignItems: 'center',
         gap: 12,
         width: '100%',
-        background: '#161616',
-        borderRadius: 14,
-        border: '0.5px solid rgba(255,255,255,0.06)',
-        padding: '14px 16px',
+        background: '#141414',
+        borderRadius: 16,
+        border: '0.5px solid rgba(255,255,255,0.07)',
+        padding: 16,
         marginBottom: 8,
         touchAction: 'manipulation',
         textAlign: 'left',
         transition: 'transform 100ms',
       }}
-      onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.98)')}
+      onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.99)')}
       onPointerUp={e => (e.currentTarget.style.transform = '')}
       onPointerLeave={e => (e.currentTarget.style.transform = '')}
     >
       {/* Icon */}
       <div style={{
-        width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-        background: 'rgba(255,255,255,0.06)',
+        flexShrink: 0, background: '#1e1e1e', borderRadius: 10, padding: 8,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <ServiceIcon type={record.type} size={20} color="#e8e8e8" />

@@ -45,11 +45,11 @@ export default function Fuel() {
   const showStats = carRecords.length >= 2
 
   return (
-    <div style={{ padding: '56px 20px 20px' }}>
+    <div style={{ padding: '56px 20px 20px', WebkitOverflowScrolling: 'touch' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0' }}>Palivo</h1>
+          <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', color: '#f0f0f0' }}>Palivo</h1>
           {carRecords.length > 0 && (
             <span style={{ fontSize: 13, color: '#5c6070' }}>{carRecords.length} záznamů</span>
           )}
@@ -70,13 +70,13 @@ export default function Fuel() {
             { label: 'Natankováno', value: totalLiters.toFixed(0), unit: 'l' },
           ].map(stat => (
             <div key={stat.label} style={{
-              flex: 1, background: '#161616', borderRadius: 12,
-              border: '0.5px solid rgba(255,255,255,0.06)',
-              padding: '12px 10px', textAlign: 'center' as const,
+              flex: 1, background: '#141414', borderRadius: 16,
+              border: '0.5px solid rgba(255,255,255,0.08)',
+              padding: '16px 12px', textAlign: 'center' as const,
             }}>
-              <div style={{ fontSize: 10, color: '#5c6070', marginBottom: 4, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{stat.label}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 10, color: '#5c6070', marginTop: 3 }}>{stat.unit}</div>
+              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>{stat.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>{stat.unit}</div>
             </div>
           ))}
         </div>
@@ -101,7 +101,7 @@ export default function Fuel() {
             onClick={() => openFuelForm()}
             style={{
               background: '#e8e8e8',
-              color: 'white', borderRadius: 14, padding: '12px 28px',
+              color: '#0a0a0a', borderRadius: 14, padding: '12px 28px',
               fontSize: 15, fontWeight: 600, touchAction: 'manipulation',
             }}
           >

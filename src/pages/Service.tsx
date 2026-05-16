@@ -73,10 +73,10 @@ export default function Service() {
   }
 
   return (
-    <div style={{ padding: '56px 20px 20px' }}>
+    <div style={{ padding: '56px 20px 20px', WebkitOverflowScrolling: 'touch' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0' }}>Servis</h1>
+        <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', color: '#f0f0f0' }}>Servis</h1>
         {allCarRecords.length > 0 && (
           <span style={{ fontSize: 13, color: '#5c6070' }}>{allCarRecords.length} záznamů</span>
         )}
