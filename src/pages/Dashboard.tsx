@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
@@ -11,6 +12,7 @@ import { fuelTypeLabel } from '../utils/labels'
 import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import ReminderDot from '../components/ui/ReminderDot'
+import CarDetail from '../components/cars/CarDetail'
 
 const sectionLabel: React.CSSProperties = {
   fontSize: 11,
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const reminders = useReminders()
   const { openCarForm } = useFab()
   const navigate = useNavigate()
+  const [carDetailOpen, setCarDetailOpen] = useState(false)
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -140,10 +143,11 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Car image — floats on background */}
+          {/* Car image — floats on background, tap to open detail */}
           <img
             src="/car-placeholder.png"
             alt="Auto"
+            onClick={() => setCarDetailOpen(true)}
             style={{
               width: '100%',
               maxHeight: 220,
@@ -151,7 +155,12 @@ export default function Dashboard() {
               display: 'block',
               margin: '0 auto',
               filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.6))',
+              cursor: 'pointer',
+              transition: 'transform 150ms ease',
             }}
+            onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+            onPointerUp={e => (e.currentTarget.style.transform = '')}
+            onPointerLeave={e => (e.currentTarget.style.transform = '')}
           />
 
           {/* Stats row */}
@@ -249,6 +258,16 @@ export default function Dashboard() {
           )}
         </>
       )}
+
+      <CarDetail
+        car={activeCar ?? null}
+        isOpen={carDetailOpen}
+        onClose={() => setCarDetailOpen(false)}
+        onEdit={() => {
+          setCarDetailOpen(false)
+          setTimeout(() => openCarForm(activeCar ?? undefined), 320)
+        }}
+      />
     </div>
   )
 }
