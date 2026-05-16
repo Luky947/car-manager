@@ -30,13 +30,6 @@ function animateNumber(
   requestAnimationFrame(tick)
 }
 
-const sectionLabel: React.CSSProperties = {
-  fontSize: 11,
-  textTransform: 'uppercase',
-  letterSpacing: '0.1em',
-  color: '#444',
-  marginBottom: 10,
-}
 
 export default function Dashboard() {
   const { cars, activeCar, setActiveCar } = useCarStore()
