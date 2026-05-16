@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
@@ -13,6 +13,22 @@ import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import ReminderDot from '../components/ui/ReminderDot'
 import CarDetail from '../components/cars/CarDetail'
+
+function animateNumber(
+  from: number,
+  to: number,
+  duration: number,
+  onUpdate: (val: number) => void
+) {
+  const start = performance.now()
+  const tick = (now: number) => {
+    const progress = Math.min((now - start) / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 3)
+    onUpdate(Math.round(from + (to - from) * eased))
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
 
 const sectionLabel: React.CSSProperties = {
   fontSize: 11,
@@ -31,6 +47,25 @@ export default function Dashboard() {
   const { openCarForm } = useFab()
   const navigate = useNavigate()
   const [carDetailOpen, setCarDetailOpen] = useState(false)
+
+  const animatedCarId = useRef<string | null>(null)
+  const [displayMileage, setDisplayMileage] = useState(0)
+  const [displayConsumption, setDisplayConsumption] = useState(0)
+  const [displayServiceCount, setDisplayServiceCount] = useState(0)
+
+  useEffect(() => {
+    if (!activeCar) return
+    if (animatedCarId.current !== activeCar.id) {
+      animatedCarId.current = activeCar.id
+      animateNumber(0, mileage, 800, setDisplayMileage)
+      animateNumber(0, Math.round(consumption * 10), 800, v => setDisplayConsumption(v / 10))
+      animateNumber(0, serviceCount, 600, setDisplayServiceCount)
+    } else {
+      setDisplayMileage(mileage)
+      setDisplayConsumption(consumption)
+      setDisplayServiceCount(serviceCount)
+    }
+  }, [activeCar, mileage, consumption, serviceCount])
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -153,7 +188,7 @@ export default function Dashboard() {
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
             <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{mileage.toLocaleString('cs-CZ')}</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{displayMileage.toLocaleString('cs-CZ')}</div>
               <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>km</div>
               {lastMileageRecord && (
                 <div style={{ fontSize: 11, color: '#555', marginTop: 4, whiteSpace: 'nowrap' }}>
@@ -163,12 +198,12 @@ export default function Dashboard() {
             </div>
             <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? consumption.toFixed(1) : '–'}</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? displayConsumption.toFixed(1) : '–'}</div>
               <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>l/100km</div>
             </div>
             <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{serviceCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{displayServiceCount}</div>
               <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>záznamů</div>
             </div>
           </div>

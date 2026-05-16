@@ -27,6 +27,7 @@ const periodOptions = [
 export default function Service() {
   const activeCar = useCarStore(s => s.activeCar)
   const serviceRecords = useServiceStore(s => s.records)
+  const softDeleteRecord = useServiceStore(s => s.softDeleteRecord)
   const fuelRecords = useFuelStore(s => s.records)
   const { openServiceForm } = useFab()
 
@@ -159,6 +160,7 @@ export default function Service() {
             record={r}
             currentMileage={currentMileage}
             onPress={() => handleCardPress(r)}
+            onDelete={() => softDeleteRecord(r.id)}
           />
         ))
       )}

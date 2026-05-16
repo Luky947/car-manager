@@ -28,7 +28,8 @@ export default function CarCard({ car, onPress }: Props) {
   return (
     <button
       type="button"
-      onClick={onPress}
+      onClick={() => { navigator.vibrate?.(10); onPress?.() }}
+      className="pressable"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -41,11 +42,7 @@ export default function CarCard({ car, onPress }: Props) {
         marginBottom: 8,
         touchAction: 'manipulation',
         textAlign: 'left',
-        transition: 'transform 100ms',
       }}
-      onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.99)')}
-      onPointerUp={e => (e.currentTarget.style.transform = '')}
-      onPointerLeave={e => (e.currentTarget.style.transform = '')}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>

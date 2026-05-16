@@ -1,4 +1,5 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import BottomNav from './BottomNav'
 import BottomSheet from '../ui/BottomSheet'
 import CarForm from '../cars/CarForm'
@@ -24,10 +25,11 @@ function FabChoiceSheet() {
     <BottomSheet isOpen={fabChoiceOpen} onClose={closeFabChoice} title="Přidat záznam">
       <div style={{ padding: '8px 20px 32px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         <button
+          className="pressable-subtle"
           style={{
             display: 'flex', alignItems: 'center', gap: 16,
             padding: 16, background: '#ffffff', borderRadius: 16,
-            border: '0.5px solid rgba(0,0,0,0.08)', touchAction: 'manipulation',
+            border: '0.5px solid rgba(0,0,0,0.08)',
           }}
           onClick={handleService}
         >
@@ -43,10 +45,11 @@ function FabChoiceSheet() {
         </button>
 
         <button
+          className="pressable-subtle"
           style={{
             display: 'flex', alignItems: 'center', gap: 16,
             padding: 16, background: '#ffffff', borderRadius: 16,
-            border: '0.5px solid rgba(0,0,0,0.08)', touchAction: 'manipulation',
+            border: '0.5px solid rgba(0,0,0,0.08)',
           }}
           onClick={handleFuel}
         >
@@ -75,8 +78,22 @@ export default function Layout() {
     documentFormOpen, closeDocumentForm, editingDocument,
   } = useFab()
 
+  const location = useLocation()
+  const [pageVisible, setPageVisible] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
+  const [pullDistance, setPullDistance] = useState(0)
+  const pullStartY = useRef(0)
+  const isPulling = useRef(false)
+
+  useEffect(() => {
+    setPageVisible(false)
+    const t = setTimeout(() => setPageVisible(true), 20)
+    return () => clearTimeout(t)
+  }, [location.pathname])
+
   return (
     <div
+      id="app-root"
       style={{
         minHeight: '100dvh',
         background: 'var(--bg)',
@@ -86,8 +103,54 @@ export default function Layout() {
         flexDirection: 'column',
       }}
     >
-      <main style={{ flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
-        <Outlet />
+      <main
+        ref={mainRef}
+        style={{ flex: 1, paddingBottom: 80, overflowY: 'auto', position: 'relative' }}
+        onTouchStart={e => {
+          if ((mainRef.current?.scrollTop ?? 1) === 0) {
+            pullStartY.current = e.touches[0].clientY
+            isPulling.current = true
+          }
+        }}
+        onTouchMove={e => {
+          if (!isPulling.current) return
+          const dy = e.touches[0].clientY - pullStartY.current
+          if (dy > 0) setPullDistance(Math.min(dy, 80))
+          else { isPulling.current = false; setPullDistance(0) }
+        }}
+        onTouchEnd={() => {
+          isPulling.current = false
+          setPullDistance(0)
+        }}
+      >
+        {/* Pull-to-refresh indicator */}
+        {pullDistance > 10 && (
+          <div style={{
+            position: 'absolute',
+            top: Math.max(pullDistance - 40, 4),
+            left: '50%',
+            transform: 'translateX(-50%)',
+            opacity: Math.min(pullDistance / 60, 1),
+            pointerEvents: 'none',
+            zIndex: 10,
+          }}>
+            <svg
+              width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="#555" strokeWidth="2" strokeLinecap="round"
+              style={{ animation: 'spin 1s linear infinite' }}
+            >
+              <path d="M21 12a9 9 0 11-6.219-8.56" />
+            </svg>
+          </div>
+        )}
+
+        <div style={{
+          opacity: pageVisible ? 1 : 0,
+          transform: pageVisible ? 'translateY(0)' : 'translateY(8px)',
+          transition: 'opacity 280ms cubic-bezier(0.2,0,0,1), transform 280ms cubic-bezier(0.2,0,0,1)',
+        }}>
+          <Outlet />
+        </div>
       </main>
 
       <BottomNav />

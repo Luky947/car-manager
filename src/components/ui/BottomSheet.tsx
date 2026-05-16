@@ -15,15 +15,20 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
   const dragY = useRef(0)
 
   useEffect(() => {
+    const root = document.getElementById('app-root')
     if (isOpen) {
       setVisible(true)
       const frame = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimateIn(true))
+        requestAnimationFrame(() => {
+          setAnimateIn(true)
+          root?.classList.add('sheet-open')
+        })
       })
       return () => cancelAnimationFrame(frame)
     } else {
       setAnimateIn(false)
-      const t = setTimeout(() => setVisible(false), 300)
+      root?.classList.remove('sheet-open')
+      const t = setTimeout(() => setVisible(false), 360)
       return () => clearTimeout(t)
     }
   }, [isOpen])
@@ -87,7 +92,7 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
           inset: 0,
           background: 'rgba(0,0,0,0.5)',
           opacity: animateIn ? 1 : 0,
-          transition: 'opacity 0.3s ease',
+          transition: 'opacity 350ms cubic-bezier(0.2, 0, 0, 1)',
         }}
       />
 
@@ -105,8 +110,8 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
           overflowY: 'auto',
           transform: animateIn ? 'translateY(0)' : 'translateY(100%)',
           transition: animateIn
-            ? 'transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1)'
-            : 'transform 300ms cubic-bezier(0.4, 0, 1, 1)',
+            ? 'transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1)'
+            : 'transform 320ms cubic-bezier(0.4, 0, 1, 1)',
           paddingBottom: 'env(safe-area-inset-bottom)',
           WebkitOverflowScrolling: 'touch',
         }}

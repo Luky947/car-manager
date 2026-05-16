@@ -117,11 +117,8 @@ export default function BottomNav() {
               gap: 3,
               height: '100%',
               touchAction: 'manipulation',
-              transition: 'transform 100ms',
             }}
-            onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.95)')}
-            onPointerUp={e => (e.currentTarget.style.transform = '')}
-            onPointerLeave={e => (e.currentTarget.style.transform = '')}
+            className="pressable-subtle"
           >
             <Icon active={active} />
             <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 600 : 400 }}>
@@ -134,7 +131,7 @@ export default function BottomNav() {
       {/* FAB */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <button
-          onClick={handleFab}
+          onClick={() => { navigator.vibrate?.(20); handleFab() }}
           style={{
             width: 56,
             height: 56,
@@ -145,12 +142,21 @@ export default function BottomNav() {
             alignItems: 'center',
             justifyContent: 'center',
             touchAction: 'manipulation',
-            transition: 'transform 100ms',
             flexShrink: 0,
+            transition: 'transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms cubic-bezier(0.2, 0, 0, 1)',
           }}
-          onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.92)')}
-          onPointerUp={e => (e.currentTarget.style.transform = '')}
-          onPointerLeave={e => (e.currentTarget.style.transform = '')}
+          onPointerDown={e => {
+            e.currentTarget.style.transform = 'scale(0.88)'
+            e.currentTarget.style.boxShadow = '0 1px 8px rgba(255,255,255,0.06)'
+          }}
+          onPointerUp={e => {
+            e.currentTarget.style.transform = ''
+            e.currentTarget.style.boxShadow = ''
+          }}
+          onPointerLeave={e => {
+            e.currentTarget.style.transform = ''
+            e.currentTarget.style.boxShadow = ''
+          }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -175,11 +181,8 @@ export default function BottomNav() {
               gap: 3,
               height: '100%',
               touchAction: 'manipulation',
-              transition: 'transform 100ms',
             }}
-            onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.95)')}
-            onPointerUp={e => (e.currentTarget.style.transform = '')}
-            onPointerLeave={e => (e.currentTarget.style.transform = '')}
+            className="pressable-subtle"
           >
             <Icon active={active} />
             <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 600 : 400 }}>
