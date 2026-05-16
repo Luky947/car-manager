@@ -142,7 +142,7 @@ export default function Dashboard() {
         <>
           {/* Header — car name + cycle on tap */}
           <div
-            style={{ marginBottom: 4, marginTop: 8, cursor: cars.length > 1 ? 'pointer' : 'default' }}
+            style={{ marginBottom: 0, marginTop: 8, cursor: cars.length > 1 ? 'pointer' : 'default' }}
             onClick={() => {
               if (cars.length <= 1) return
               const idx = cars.findIndex(c => c.id === activeCar.id)
@@ -150,7 +150,7 @@ export default function Dashboard() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 28, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.1 }}>
+              <span style={{ fontSize: 24, fontWeight: 700, color: '#f0f0f0', letterSpacing: '-0.02em', margin: '0 0 2px' }}>
                 {activeCar.brand} {activeCar.model}
               </span>
               {cars.length > 1 && (
@@ -159,30 +159,67 @@ export default function Dashboard() {
                 </svg>
               )}
             </div>
-            <div style={{ fontSize: 14, color: '#5c6070', marginTop: 6 }}>
+            <div style={{ fontSize: 13, color: '#555', margin: 0 }}>
               {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
             </div>
           </div>
 
-          {/* Car image — floats on background, tap to open detail */}
-          <img
-            src="/car-placeholder.png"
-            alt="Auto"
-            onClick={() => setCarDetailOpen(true)}
-            style={{
-              width: '100%',
-              maxHeight: 220,
-              objectFit: 'contain',
-              display: 'block',
-              margin: '0 auto',
-              filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.6))',
-              cursor: 'pointer',
-              transition: 'transform 150ms ease',
-            }}
-            onPointerDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
-            onPointerUp={e => (e.currentTarget.style.transform = '')}
-            onPointerLeave={e => (e.currentTarget.style.transform = '')}
-          />
+          {/* Hero — car on radial gradient spotlight */}
+          <div style={{
+            position: 'relative',
+            width: '100vw',
+            marginLeft: '-20px',
+            height: '260px',
+            background: 'radial-gradient(ellipse at 50% 70%, #2e2e2e 0%, #1a1a1a 45%, #0a0a0a 100%)',
+            overflow: 'hidden',
+            marginBottom: '24px',
+          }}>
+            {/* Spotlight */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80%',
+              height: '60px',
+              background: 'radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }} />
+
+            {/* Car */}
+            <img
+              src="/car-placeholder.png"
+              alt="Auto"
+              onClick={() => setCarDetailOpen(true)}
+              style={{
+                position: 'absolute',
+                bottom: '-10px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '110%',
+                maxWidth: '420px',
+                height: '220px',
+                objectFit: 'contain',
+                cursor: 'pointer',
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.8))',
+                transition: 'transform 150ms cubic-bezier(0.2,0,0,1)',
+              }}
+              onPointerDown={e => (e.currentTarget.style.transform = 'translateX(-50%) scale(0.97)')}
+              onPointerUp={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
+              onPointerLeave={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
+            />
+
+            {/* Bottom fade into page background */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '80px',
+              background: 'linear-gradient(to bottom, transparent, #0a0a0a)',
+              pointerEvents: 'none',
+            }} />
+          </div>
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
