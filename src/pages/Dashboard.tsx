@@ -133,25 +133,53 @@ export default function Dashboard() {
           {/* Active car */}
           <div style={{ marginBottom: 28 }}>
             <p style={sectionLabel}>Aktivní auto</p>
-            <div style={{ background: '#1e1d2e', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.06)', padding: '20px 20px 16px' }}>
+            <div style={{
+              background: 'linear-gradient(145deg, #1e1d2e 0%, #252438 50%, #1a1928 100%)',
+              borderRadius: 20,
+              border: '1px solid rgba(108,99,255,0.25)',
+              overflow: 'hidden',
+              position: 'relative',
+              padding: '0 0 20px 0',
+            }}>
+              {/* Accent line */}
+              <div style={{
+                height: 1,
+                background: 'linear-gradient(90deg, transparent 0%, rgba(108,99,255,0.6) 30%, rgba(79,158,255,0.6) 70%, transparent 100%)',
+                width: '100%',
+              }} />
+              {/* Radial gradient overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '60%',
+                background: 'radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.15) 0%, transparent 70%)',
+                pointerEvents: 'none',
+              }} />
+              {/* Car image */}
               <img
                 src="/car-placeholder.png"
                 alt="Auto"
                 style={{
                   width: '100%',
-                  maxWidth: '300px',
-                  height: '160px',
+                  maxWidth: 320,
+                  height: 180,
                   objectFit: 'contain',
                   display: 'block',
-                  margin: '0 auto 8px auto',
-                  filter: 'drop-shadow(0 8px 24px rgba(108,99,255,0.25))',
+                  margin: '16px auto -8px auto',
+                  filter: 'drop-shadow(0 12px 32px rgba(0,0,0,0.5))',
+                  position: 'relative',
                 }}
               />
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
-                {activeCar.brand} {activeCar.model}
-              </div>
-              <div style={{ fontSize: 13, color: '#9a9da8' }}>
-                {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
+              {/* Car info */}
+              <div style={{ padding: '0 20px' }}>
+                <div style={{ fontSize: 24, fontWeight: 600, color: '#f0f0f0', marginBottom: 4 }}>
+                  {activeCar.brand} {activeCar.model}
+                </div>
+                <div style={{ fontSize: 14, color: 'var(--text2)' }}>
+                  {activeCar.year} · {activeCar.licensePlate} · {fuelTypeLabel[activeCar.fuelType]}
+                </div>
               </div>
             </div>
           </div>
