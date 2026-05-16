@@ -18,6 +18,14 @@ export const serviceTypeLabel: Record<ServiceType, string> = {
   other: 'Ostatní',
 }
 
+export const documentTypeLabel: Record<'insurance' | 'registration' | 'warranty' | 'invoice' | 'other', string> = {
+  insurance: 'Pojištění',
+  registration: 'Registrace',
+  warranty: 'Záruka',
+  invoice: 'Faktura',
+  other: 'Ostatní',
+}
+
 export const fuelTypeLabel: Record<string, string> = {
   petrol: 'Benzín',
   diesel: 'Diesel',
