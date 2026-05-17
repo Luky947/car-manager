@@ -33,7 +33,7 @@ function animateNumber(
 }
 
 
-const WINE_BORDER_NORMAL = 'linear-gradient(#141414, #141414) padding-box, linear-gradient(160deg, #6b1228 0%, #9e2d47 35%, #6b1228 70%, #4a0d1c 100%) border-box'
+const WINE_BORDER_NORMAL = 'linear-gradient(#141414, #141414) padding-box, linear-gradient(160deg, #7a1530 0%, #b8335a 35%, #7a1530 70%, #5a0f22 100%) border-box'
 const WINE_BORDER_ACTIVE = 'linear-gradient(#1e1010, #1e1010) padding-box, linear-gradient(160deg, #9e2d47 0%, #c4436a 35%, #9e2d47 70%, #6b1228 100%) border-box'
 
 function ActionTile({ label, onClick, children, active = false, dimmed = false }: {
@@ -63,10 +63,10 @@ function ActionTile({ label, onClick, children, active = false, dimmed = false }
         opacity: dimmed ? 0.5 : pressed ? 0.85 : 1,
         transform: pressed ? 'scale(0.97)' : 'scale(1)',
         boxShadow: pressed
-          ? '0 0 20px rgba(139,42,69,0.3)'
+          ? '0 0 20px rgba(184,51,90,0.35)'
           : active
             ? '0 0 24px rgba(196,67,106,0.25)'
-            : '0 0 12px rgba(139,42,69,0.15)',
+            : '0 0 16px rgba(184,51,90,0.2)',
         transition: pressed
           ? 'transform 60ms cubic-bezier(0.2,0,0,1), opacity 60ms, box-shadow 60ms'
           : 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), opacity 200ms, box-shadow 200ms',
@@ -101,7 +101,7 @@ export default function Dashboard() {
     const opts: Intl.DateTimeFormatOptions = d.getFullYear() === new Date().getFullYear()
       ? { day: 'numeric', month: 'numeric' }
       : { day: 'numeric', month: 'numeric', year: 'numeric' }
-    return `aktualizováno ${d.toLocaleDateString('cs-CZ', opts)}`
+    return `· aktualizováno ${d.toLocaleDateString('cs-CZ', opts)}`
   }
 
   const consumption = activeCar
@@ -288,7 +288,7 @@ export default function Dashboard() {
               onClick={() => setCarDetailOpen(true)}
               style={{
                 position: 'absolute',
-                bottom: '-20px',
+                bottom: '-30px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 width: '115%',
@@ -323,13 +323,13 @@ export default function Dashboard() {
                 {
                   value: displayMileage.toLocaleString('cs-CZ'),
                   suffix: 'km',
-                  label: 'CELKOVÝ NÁJEZD',
+                  label: 'CELK. NÁJEZD',
                   showSuffix: true,
                 },
                 {
                   value: consumption > 0 ? displayConsumption.toFixed(1) : '–',
                   suffix: 'l',
-                  label: 'PRŮMĚRNÁ SPOTŘEBA',
+                  label: 'PRŮM. SPOTŘEBA',
                   showSuffix: consumption > 0,
                 },
                 {
@@ -345,12 +345,12 @@ export default function Dashboard() {
                   borderRadius: 16,
                   border: '0.5px solid rgba(255,255,255,0.10)',
                   boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.5), inset 1px 0 0 rgba(255,255,255,0.04), inset -1px 0 0 rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4)',
-                  padding: '16px 12px',
+                  padding: '18px 12px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: 88,
+                  minHeight: 100,
                   textAlign: 'center',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'baseline' }}>
@@ -363,14 +363,14 @@ export default function Dashboard() {
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: 10, color: '#444', letterSpacing: '0.05em', margin: '6px 0 0' }}>
+                  <div style={{ fontSize: 10, color: '#444', letterSpacing: '0.05em', margin: '6px 0 0', whiteSpace: 'nowrap' }}>
                     {stat.label}
                   </div>
                 </div>
               ))}
             </div>
             {lastMileageRecord && (
-              <div style={{ fontSize: 11, color: '#333', textAlign: 'right', marginTop: 6, paddingRight: 4 }}>
+              <div style={{ fontSize: 11, color: '#666', textAlign: 'right', marginTop: 6, paddingRight: 4, fontWeight: 400 }}>
                 {formatLastUpdate(lastMileageRecord.date)}
               </div>
             )}
