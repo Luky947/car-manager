@@ -10,6 +10,7 @@ import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
 import { fuelTypeLabel } from '../utils/labels'
 import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
+import { usePressable } from '../hooks/usePressable'
 import ReminderDot from '../components/ui/ReminderDot'
 import BottomSheet from '../components/ui/BottomSheet'
 import CarDetail from '../components/cars/CarDetail'
@@ -32,6 +33,9 @@ function animateNumber(
 }
 
 
+const WINE_BORDER_NORMAL = 'linear-gradient(#141414, #141414) padding-box, linear-gradient(160deg, #6b1228 0%, #9e2d47 35%, #6b1228 70%, #4a0d1c 100%) border-box'
+const WINE_BORDER_ACTIVE = 'linear-gradient(#1e1010, #1e1010) padding-box, linear-gradient(160deg, #9e2d47 0%, #c4436a 35%, #9e2d47 70%, #6b1228 100%) border-box'
+
 function ActionTile({ label, onClick, children, active = false, dimmed = false }: {
   label: string
   onClick: () => void
@@ -39,13 +43,15 @@ function ActionTile({ label, onClick, children, active = false, dimmed = false }
   active?: boolean
   dimmed?: boolean
 }) {
+  const { handlers, pressed } = usePressable(onClick)
+
   return (
     <button
-      onClick={onClick}
-      className="pressable"
+      type="button"
+      {...handlers}
       style={{
-        background: active ? '#f5f5f7' : '#141414',
-        border: `0.5px solid ${active ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
+        background: active ? WINE_BORDER_ACTIVE : WINE_BORDER_NORMAL,
+        border: '1.5px solid transparent',
         borderRadius: 16,
         padding: '14px 16px',
         display: 'flex',
@@ -54,14 +60,22 @@ function ActionTile({ label, onClick, children, active = false, dimmed = false }
         gap: 12,
         height: 64,
         touchAction: 'manipulation',
-        opacity: dimmed ? 0.5 : 1,
-        transition: 'background 150ms, border-color 150ms, opacity 200ms',
+        opacity: dimmed ? 0.5 : pressed ? 0.85 : 1,
+        transform: pressed ? 'scale(0.97)' : 'scale(1)',
+        boxShadow: pressed
+          ? '0 0 20px rgba(139,42,69,0.3)'
+          : active
+            ? '0 0 24px rgba(196,67,106,0.25)'
+            : '0 0 12px rgba(139,42,69,0.15)',
+        transition: pressed
+          ? 'transform 60ms cubic-bezier(0.2,0,0,1), opacity 60ms, box-shadow 60ms'
+          : 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), opacity 200ms, box-shadow 200ms',
       }}
     >
-      <div style={{ width: 36, height: 36, background: active ? '#e8e8e8' : '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 150ms' }}>
+      <div style={{ width: 36, height: 36, background: '#1a1a1a', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         {children}
       </div>
-      <span style={{ fontSize: 13, fontWeight: 500, color: active ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', transition: 'color 150ms' }}>{label}</span>
+      <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>
     </button>
   )
 }
@@ -382,14 +396,14 @@ export default function Dashboard() {
 
             {/* 3 — Statistiky */}
             <ActionTile label="Statistiky" onClick={() => setActiveModal(m => m === 'stats' ? null : 'stats')} active={activeModal === 'stats'} dimmed={activeModal !== null && activeModal !== 'stats'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'stats' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
               </svg>
             </ActionTile>
 
             {/* 4 — Příští servis */}
             <ActionTile label="Příští servis" onClick={() => setActiveModal(m => m === 'nextService' ? null : 'nextService')} active={activeModal === 'nextService'} dimmed={activeModal !== null && activeModal !== 'nextService'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'nextService' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                 <path d="M9 16l2 2 4-4"/>
               </svg>
@@ -397,14 +411,14 @@ export default function Dashboard() {
 
             {/* 5 — Pojištění / STK */}
             <ActionTile label="Pojištění / STK" onClick={() => setActiveModal(m => m === 'insurance' ? null : 'insurance')} active={activeModal === 'insurance'} dimmed={activeModal !== null && activeModal !== 'insurance'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'insurance' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
             </ActionTile>
 
             {/* 6 — Výdaje */}
             <ActionTile label="Výdaje" onClick={() => setActiveModal(m => m === 'expenses' ? null : 'expenses')} active={activeModal === 'expenses'} dimmed={activeModal !== null && activeModal !== 'expenses'}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'expenses' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
               </svg>
             </ActionTile>
