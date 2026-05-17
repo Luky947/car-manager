@@ -36,13 +36,13 @@ export default function HeadlightEffect() {
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
-      {/* Left headlight — main, right side of image */}
+      {/* Left headlight — main */}
       <div style={{
         position: 'absolute',
-        bottom: '32%',
-        right: '12%',
-        width: '50px',
-        height: '10px',
+        bottom: '34%',
+        left: '42%',
+        width: '45px',
+        height: '9px',
         background: 'rgba(220,240,255,0.95)',
         borderRadius: '5px',
         opacity,
@@ -53,13 +53,13 @@ export default function HeadlightEffect() {
         border: '1px solid red',
       }} />
 
-      {/* Right headlight — center of image */}
+      {/* Right headlight */}
       <div style={{
         position: 'absolute',
-        bottom: '30%',
-        right: '26%',
-        width: '35px',
-        height: '8px',
+        bottom: '32%',
+        left: '30%',
+        width: '30px',
+        height: '7px',
         background: 'rgba(220,240,255,0.95)',
         borderRadius: '4px',
         opacity,
