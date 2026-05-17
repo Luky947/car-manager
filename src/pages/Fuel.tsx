@@ -10,7 +10,6 @@ import FuelDetail from '../components/fuel/FuelDetail'
 export default function Fuel() {
   const activeCar = useCarStore(s => s.activeCar)
   const fuelRecords = useFuelStore(s => s.records)
-  const softDeleteFuelRecord = useFuelStore(s => s.softDeleteRecord)
   const { openFuelForm } = useFab()
 
   const [selectedRecord, setSelectedRecord] = useState<FuelRecord | null>(null)
@@ -111,7 +110,7 @@ export default function Fuel() {
         </div>
       ) : (
         carRecords.map(r => (
-          <FuelCard key={r.id} record={r} onPress={() => handleCardPress(r)} onDelete={() => softDeleteFuelRecord(r.id)} />
+          <FuelCard key={r.id} record={r} onPress={() => handleCardPress(r)} />
         ))
       )}
 
