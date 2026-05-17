@@ -62,7 +62,7 @@ export default function FuelCard({ record, onPress, onDelete }: Props) {
       position: 'relative',
       borderRadius: 16,
       overflow: 'hidden',
-      marginBottom: deleting ? 0 : 8,
+      marginBottom: deleting ? 0 : 1,
       maxHeight: deleting ? 0 : 300,
       opacity: deleting ? 0 : 1,
       transition: 'max-height 280ms ease, opacity 200ms ease, margin-bottom 280ms ease',
@@ -138,21 +138,26 @@ export default function FuelCard({ record, onPress, onDelete }: Props) {
         </div>
 
         {/* Right */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#f0f0f0' }}>
-            {record.totalCost.toLocaleString('cs-CZ')} Kč
-          </span>
-          {record.fullTank && (
-            <span style={{
-              fontSize: 10, fontWeight: 600, color: '#22c55e',
-              background: 'rgba(34,197,94,0.12)',
-              border: '0.5px solid rgba(34,197,94,0.2)',
-              borderRadius: 6, padding: '2px 7px',
-              textTransform: 'uppercase', letterSpacing: '0.04em',
-            }}>
-              Plná
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#f0f0f0' }}>
+              {record.totalCost.toLocaleString('cs-CZ')} Kč
             </span>
-          )}
+            {record.fullTank && (
+              <span style={{
+                fontSize: 10, fontWeight: 600, color: '#22c55e',
+                background: 'rgba(34,197,94,0.12)',
+                border: '0.5px solid rgba(34,197,94,0.2)',
+                borderRadius: 6, padding: '2px 7px',
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+              }}>
+                Plná
+              </span>
+            )}
+          </div>
+          <svg width="8" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
         </div>
       </button>
     </div>

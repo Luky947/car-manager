@@ -44,7 +44,7 @@ html, body {
 }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: -apple-system, 'SF Pro Display', 'DM Sans', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;

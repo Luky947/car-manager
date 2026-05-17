@@ -69,7 +69,7 @@ export default function ServiceCard({ record, currentMileage, onPress, onDelete 
       position: 'relative',
       borderRadius: 16,
       overflow: 'hidden',
-      marginBottom: deleting ? 0 : 8,
+      marginBottom: deleting ? 0 : 1,
       maxHeight: deleting ? 0 : 300,
       opacity: deleting ? 0 : 1,
       transition: 'max-height 280ms ease, opacity 200ms ease, margin-bottom 280ms ease',
@@ -139,15 +139,20 @@ export default function ServiceCard({ record, currentMileage, onPress, onDelete 
         </div>
 
         {/* Right */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-          {record.cost != null && (
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0' }}>
-              {record.cost.toLocaleString('cs-CZ')} Kč
-            </span>
-          )}
-          {record.reminderEnabled && status !== 'none' && (
-            <ReminderDot status={status} />
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+            {record.cost != null && (
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0' }}>
+                {record.cost.toLocaleString('cs-CZ')} Kč
+              </span>
+            )}
+            {record.reminderEnabled && status !== 'none' && (
+              <ReminderDot status={status} />
+            )}
+          </div>
+          <svg width="8" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
         </div>
       </button>
     </div>

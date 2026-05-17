@@ -14,7 +14,7 @@ import ServiceDetail from '../components/service/ServiceDetail'
 const filterOptions = [
   { label: 'Vše', value: 'all' },
   { label: 'Servis', value: 'service' },
-  { label: 'Pojištění & STK', value: 'docs' },
+  { label: 'Pojištění', value: 'docs' },
   { label: 'Ostatní', value: 'other' },
 ]
 
@@ -75,6 +75,8 @@ export default function Service() {
 
   return (
     <div style={{ padding: '56px 20px 20px', WebkitOverflowScrolling: 'touch' }}>
+      {/* Pull indicator */}
+      <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.2)', borderRadius: 2, margin: '0 auto 16px' }} />
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
         <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', color: '#f0f0f0' }}>Servis</h1>

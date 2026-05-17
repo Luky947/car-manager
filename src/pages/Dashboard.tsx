@@ -271,7 +271,7 @@ export default function Dashboard() {
                   <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left' }}>Přidat servis</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Přidat servis</span>
             </button>
 
             {/* Add Fuel */}
@@ -298,7 +298,7 @@ export default function Dashboard() {
                   <path d="M3 3h10v18H3z"/><path d="M13 7h2a2 2 0 012 2v3a2 2 0 002 2h0V7l-3-4"/><line x1="7" y1="8" x2="9" y2="8"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left' }}>Přidat tankování</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Přidat tankování</span>
             </button>
 
             {/* Reminders — opens modal */}
@@ -330,7 +330,7 @@ export default function Dashboard() {
                   <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: activeModal === 'reminders' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms' }}>Připomínky</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: activeModal === 'reminders' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Připomínky</span>
             </button>
 
             {/* Documents — opens modal */}
@@ -365,7 +365,7 @@ export default function Dashboard() {
                   <line x1="16" y1="17" x2="8" y2="17"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 500, color: activeModal === 'documents' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms' }}>Dokumenty</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: activeModal === 'documents' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Dokumenty</span>
             </button>
           </div>
 

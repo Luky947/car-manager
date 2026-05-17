@@ -114,16 +114,22 @@ export default function BottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 3,
               height: '100%',
               touchAction: 'manipulation',
             }}
             className="pressable-subtle"
           >
-            <Icon active={active} />
-            <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 600 : 400 }}>
-              {label}
-            </span>
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              borderRadius: 10, padding: '4px 12px',
+              background: active ? 'rgba(255,255,255,0.08)' : 'transparent',
+              transition: 'background 200ms cubic-bezier(0.34,1.56,0.64,1)',
+            }}>
+              <Icon active={active} />
+              <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 500 : 400, letterSpacing: '0.02em' }}>
+                {label}
+              </span>
+            </div>
           </button>
         )
       })}
@@ -178,16 +184,22 @@ export default function BottomNav() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 3,
               height: '100%',
               touchAction: 'manipulation',
             }}
             className="pressable-subtle"
           >
-            <Icon active={active} />
-            <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 600 : 400 }}>
-              {label}
-            </span>
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              borderRadius: 10, padding: '4px 12px',
+              background: active ? 'rgba(255,255,255,0.08)' : 'transparent',
+              transition: 'background 200ms cubic-bezier(0.34,1.56,0.64,1)',
+            }}>
+              <Icon active={active} />
+              <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#9a9da8', fontWeight: active ? 500 : 400, letterSpacing: '0.02em' }}>
+                {label}
+              </span>
+            </div>
           </button>
         )
       })}
