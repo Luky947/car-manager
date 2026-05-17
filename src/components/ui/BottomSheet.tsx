@@ -112,25 +112,21 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
           transition: animateIn
             ? 'transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1)'
             : 'transform 320ms cubic-bezier(0.4, 0, 1, 1)',
+          paddingTop: 'max(env(safe-area-inset-top), 16px)',
           paddingBottom: 'env(safe-area-inset-bottom)',
           WebkitOverflowScrolling: 'touch',
         }}
       >
         {/* Handle */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            paddingTop: 12,
-            paddingBottom: 8,
-          }}
-        >
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div
             style={{
               width: 36,
               height: 4,
               background: 'rgba(0,0,0,0.15)',
               borderRadius: 2,
+              marginTop: 12,
+              marginBottom: 16,
             }}
           />
         </div>
