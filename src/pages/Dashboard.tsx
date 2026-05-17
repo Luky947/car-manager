@@ -223,29 +223,63 @@ export default function Dashboard() {
           </div>
 
           {/* Stats row */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Aktuální km</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{displayMileage.toLocaleString('cs-CZ')}</div>
-              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>km</div>
-              {lastMileageRecord && (
-                <div style={{ fontSize: 11, color: '#555', marginTop: 4, whiteSpace: 'nowrap' }}>
-                  {formatLastUpdate(lastMileageRecord.date)}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {[
+                {
+                  value: displayMileage.toLocaleString('cs-CZ'),
+                  suffix: 'km',
+                  label: 'CELKOVÝ NÁJEZD',
+                  showSuffix: true,
+                },
+                {
+                  value: consumption > 0 ? displayConsumption.toFixed(1) : '–',
+                  suffix: 'l',
+                  label: 'PRŮMĚRNÁ SPOTŘEBA',
+                  showSuffix: consumption > 0,
+                },
+                {
+                  value: yearlyMileage > 0 ? displayYearlyMileage.toLocaleString('cs-CZ') : '–',
+                  suffix: 'km',
+                  label: 'NÁJEZD LETOS',
+                  showSuffix: yearlyMileage > 0,
+                },
+              ].map(stat => (
+                <div key={stat.label} style={{
+                  flex: 1,
+                  background: 'linear-gradient(145deg, #1a1a1a, #111111)',
+                  borderRadius: 16,
+                  border: '0.5px solid rgba(255,255,255,0.10)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.5), inset 1px 0 0 rgba(255,255,255,0.04), inset -1px 0 0 rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.4)',
+                  padding: '16px 12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 88,
+                  textAlign: 'center',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: '#f0f0f0', letterSpacing: '-0.02em' }}>
+                      {stat.value}
+                    </span>
+                    {stat.showSuffix && (
+                      <span style={{ fontSize: 11, fontWeight: 400, color: '#555', marginLeft: 2 }}>
+                        {stat.suffix}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 10, color: '#444', letterSpacing: '0.05em', margin: '6px 0 0' }}>
+                    {stat.label}
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Spotřeba</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{consumption > 0 ? displayConsumption.toFixed(1) : '–'}</div>
-              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>l/100km</div>
-            </div>
-            <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Nájezd</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>
-                {yearlyMileage > 0 ? displayYearlyMileage.toLocaleString('cs-CZ') : '–'}
+            {lastMileageRecord && (
+              <div style={{ fontSize: 11, color: '#333', textAlign: 'right', marginTop: 6, paddingRight: 4 }}>
+                {formatLastUpdate(lastMileageRecord.date)}
               </div>
-              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>km / rok</div>
-            </div>
+            )}
           </div>
 
           {/* Quick Actions 2×2 */}
