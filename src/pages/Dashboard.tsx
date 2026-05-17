@@ -15,6 +15,7 @@ import ReminderDot from '../components/ui/ReminderDot'
 import BottomSheet from '../components/ui/BottomSheet'
 import CarDetail from '../components/cars/CarDetail'
 import CenterModal from '../components/ui/CenterModal'
+import HeadlightEffect from '../components/dashboard/HeadlightEffect'
 
 function animateNumber(
   from: number,
@@ -303,6 +304,8 @@ export default function Dashboard() {
               onPointerUp={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
               onPointerLeave={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
             />
+
+            <HeadlightEffect />
 
             {/* Bottom fade into page background */}
             <div style={{
