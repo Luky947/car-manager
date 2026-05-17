@@ -32,40 +32,42 @@ export default function HeadlightEffect() {
     return () => { cancelled = true }
   }, [location.pathname])
 
-  const drlShadow = '0 0 8px 3px rgba(200,225,255,0.8), 0 0 20px 6px rgba(180,210,255,0.4), 0 0 40px 10px rgba(160,195,255,0.15)'
+  const drlShadow = '0 0 6px 2px rgba(200,225,255,0.9), 0 0 16px 5px rgba(180,210,255,0.5), 0 0 30px 8px rgba(160,195,255,0.2)'
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
-      {/* Left DRL strip — main headlight */}
+      {/* Left headlight — main, right side of image */}
       <div style={{
         position: 'absolute',
-        bottom: '38%',
-        left: '18%',
-        width: '55px',
-        height: '12px',
+        bottom: '32%',
+        right: '12%',
+        width: '50px',
+        height: '10px',
         background: 'rgba(220,240,255,0.95)',
-        borderRadius: '6px',
+        borderRadius: '5px',
         opacity,
-        transform: 'rotate(-5deg)',
+        transform: 'rotate(2deg)',
         filter: 'blur(1.5px)',
         boxShadow: drlShadow,
         transition: 'opacity 40ms ease',
+        border: '1px solid red',
       }} />
 
-      {/* Right DRL strip — smaller, angled */}
+      {/* Right headlight — center of image */}
       <div style={{
         position: 'absolute',
-        bottom: '36%',
-        right: '28%',
-        width: '30px',
+        bottom: '30%',
+        right: '26%',
+        width: '35px',
         height: '8px',
         background: 'rgba(220,240,255,0.95)',
         borderRadius: '4px',
         opacity,
-        transform: 'rotate(-3deg)',
+        transform: 'rotate(1deg)',
         filter: 'blur(1.5px)',
         boxShadow: drlShadow,
         transition: 'opacity 40ms ease',
+        border: '1px solid red',
       }} />
 
       {/* Ambient ground glow */}
