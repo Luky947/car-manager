@@ -511,7 +511,7 @@ export default function Dashboard() {
                     { label: 'Pojištění & STK', value: svcCosts.insurance },
                     { label: 'Ostatní', value: svcCosts.other },
                     { label: 'Palivo', value: fuelCost },
-                  ].map((row, i) => (
+                  ].map(row => (
                     <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
                       <span style={{ fontSize: 14, color: '#555' }}>{row.label}</span>
                       <span style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{row.value > 0 ? `${row.value.toLocaleString('cs-CZ')} Kč` : '–'}</span>
