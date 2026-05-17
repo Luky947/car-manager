@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
 import { useDocumentStore } from '../stores/useDocumentStore'
-import { useReminders } from '../hooks/useReminders'
-import { getCurrentMileage, calculateConsumption, getLastMileageRecord, getYearlyMileage } from '../utils/calculations'
+import { getCurrentMileage, calculateConsumption, getLastMileageRecord, getYearlyMileage, filterRecordsByPeriod, calculateServiceCosts } from '../utils/calculations'
+import type { CostPeriod } from '../utils/calculations'
 import { getReminderStatus } from '../utils/reminders'
 import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
-import { fuelTypeLabel, documentTypeLabel } from '../utils/labels'
+import { fuelTypeLabel } from '../utils/labels'
 import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import ReminderDot from '../components/ui/ReminderDot'
@@ -33,16 +32,49 @@ function animateNumber(
 }
 
 
+function ActionTile({ label, onClick, children, active = false, dimmed = false }: {
+  label: string
+  onClick: () => void
+  children: React.ReactNode
+  active?: boolean
+  dimmed?: boolean
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="pressable"
+      style={{
+        background: active ? '#f5f5f7' : '#141414',
+        border: `0.5px solid ${active ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: 16,
+        padding: '14px 16px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        height: 64,
+        touchAction: 'manipulation',
+        opacity: dimmed ? 0.5 : 1,
+        transition: 'background 150ms, border-color 150ms, opacity 200ms',
+      }}
+    >
+      <div style={{ width: 36, height: 36, background: active ? '#e8e8e8' : '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 150ms' }}>
+        {children}
+      </div>
+      <span style={{ fontSize: 13, fontWeight: 500, color: active ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', transition: 'color 150ms' }}>{label}</span>
+    </button>
+  )
+}
+
 export default function Dashboard() {
   const { cars, activeCar, setActiveCar } = useCarStore()
   const serviceRecords = useServiceStore(s => s.records)
   const fuelRecords = useFuelStore(s => s.records)
   const documents = useDocumentStore(s => s.documents)
-  const reminders = useReminders()
   const { openCarForm, openServiceForm, openFuelForm } = useFab()
-  const navigate = useNavigate()
   const [carDetailOpen, setCarDetailOpen] = useState(false)
-  const [activeModal, setActiveModal] = useState<'reminders' | 'documents' | null>(null)
+  const [activeModal, setActiveModal] = useState<'stats' | 'nextService' | 'insurance' | 'expenses' | null>(null)
+  const [expensePeriod, setExpensePeriod] = useState<CostPeriod>('year')
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -85,14 +117,62 @@ export default function Dashboard() {
     }
   }, [activeCar, mileage, consumption, yearlyMileage])
 
-  const allDocs = documents
-    .filter(d => !d.deletedAt)
+  const allCarServiceRecords = activeCar
+    ? serviceRecords.filter(r => r.carId === activeCar.id && !r.deletedAt)
+    : []
+
+  const allCarFuelRecords = activeCar
+    ? fuelRecords.filter(r => r.carId === activeCar.id && !r.deletedAt)
+    : []
+
+  // Stats modal data
+  const statsServiceCosts = calculateServiceCosts(filterRecordsByPeriod(allCarServiceRecords, 'year'))
+  const statsFuelCost = allCarFuelRecords
+    .filter(r => new Date(r.date).getFullYear() === new Date().getFullYear())
+    .reduce((s, r) => s + r.totalCost, 0)
+
+  // Next service modal data
+  const nextServiceRecord = allCarServiceRecords
+    .filter(r => r.reminderEnabled && (r.nextServiceDate || r.nextServiceMileage))
     .sort((a, b) => {
-      if (!a.expiryDate && !b.expiryDate) return 0
-      if (!a.expiryDate) return 1
-      if (!b.expiryDate) return -1
-      return new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()
-    })
+      const dateA = a.nextServiceDate ? new Date(a.nextServiceDate).getTime() : Infinity
+      const dateB = b.nextServiceDate ? new Date(b.nextServiceDate).getTime() : Infinity
+      return dateA - dateB
+    })[0] ?? null
+
+  // Insurance/STK modal data
+  const insuranceTypes = ['insurance', 'registration', 'technical_inspection', 'emission_test']
+  const insuranceServiceItems = allCarServiceRecords
+    .filter(r => insuranceTypes.includes(r.type) && r.nextServiceDate)
+    .map(r => ({ label: SERVICE_TYPE_LABELS[r.type], date: r.nextServiceDate!, days: daysUntil(r.nextServiceDate!) }))
+  const insuranceDocItems = documents
+    .filter(d => !d.deletedAt && d.carId === activeCar?.id && ['insurance', 'registration'].includes(d.type) && d.expiryDate)
+    .map(d => ({ label: d.title, date: d.expiryDate!, days: daysUntil(d.expiryDate!) }))
+  const insuranceItems = [...insuranceServiceItems, ...insuranceDocItems]
+    .sort((a, b) => a.days - b.days)
+
+  // Expenses modal data
+  function getFuelCostForPeriod(period: CostPeriod): number {
+    const now = new Date()
+    return allCarFuelRecords.filter(r => {
+      const d = new Date(r.date)
+      if (period === 'year') return d.getFullYear() === now.getFullYear()
+      if (period === '12months') {
+        const ago = new Date(now); ago.setMonth(now.getMonth() - 12)
+        return d >= ago
+      }
+      return true
+    }).reduce((s, r) => s + r.totalCost, 0)
+  }
+  function getExpenseMonths(period: CostPeriod): number {
+    if (period === 'year') return new Date().getMonth() + 1
+    if (period === '12months') return 12
+    return Math.max(1, Math.ceil(
+      (new Date().getTime() - Math.min(
+        ...[...allCarServiceRecords, ...allCarFuelRecords].map(r => new Date(r.date).getTime())
+      )) / (1000 * 60 * 60 * 24 * 30)
+    ))
+  }
 
   if (cars.length === 0) {
     return (
@@ -282,247 +362,174 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Quick Actions 2×2 */}
+          {/* Quick Actions 2×3 */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
-            {/* Add Service */}
-            <button
-              onClick={() => openServiceForm()}
-              className="pressable"
-              style={{
-                background: '#141414',
-                border: '0.5px solid rgba(255,255,255,0.07)',
-                borderRadius: 16,
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                height: 64,
-                touchAction: 'manipulation',
-                opacity: activeModal !== null ? 0.5 : 1,
-                transition: 'opacity 200ms',
-              }}
-            >
-              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
-                </svg>
-              </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Přidat servis</span>
-            </button>
 
-            {/* Add Fuel */}
-            <button
-              onClick={() => openFuelForm()}
-              className="pressable"
-              style={{
-                background: '#141414',
-                border: '0.5px solid rgba(255,255,255,0.07)',
-                borderRadius: 16,
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                height: 64,
-                touchAction: 'manipulation',
-                opacity: activeModal !== null ? 0.5 : 1,
-                transition: 'opacity 200ms',
-              }}
-            >
-              <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 3h10v18H3z"/><path d="M13 7h2a2 2 0 012 2v3a2 2 0 002 2h0V7l-3-4"/><line x1="7" y1="8" x2="9" y2="8"/>
-                </svg>
-              </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#f0f0f0', lineHeight: 1.2, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Přidat tankování</span>
-            </button>
+            {/* 1 — Přidat servis */}
+            <ActionTile label="Přidat servis" onClick={() => openServiceForm()} dimmed={activeModal !== null}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </ActionTile>
 
-            {/* Reminders — opens modal */}
-            <button
-              onClick={() => setActiveModal(m => m === 'reminders' ? null : 'reminders')}
-              className="pressable"
-              style={{
-                background: activeModal === 'reminders' ? '#f5f5f7' : '#141414',
-                border: `0.5px solid ${activeModal === 'reminders' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
-                borderRadius: 16,
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                height: 64,
-                touchAction: 'manipulation',
-                opacity: activeModal === 'documents' ? 0.5 : 1,
-                transition: 'background 150ms, border-color 150ms, opacity 200ms',
-              }}
-            >
-              <div style={{
-                width: 36, height: 36,
-                background: activeModal === 'reminders' ? '#e8e8e8' : '#1e1e1e',
-                borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                transition: 'background 150ms',
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'reminders' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
-                </svg>
-              </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: activeModal === 'reminders' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Připomínky</span>
-            </button>
+            {/* 2 — Přidat tankování */}
+            <ActionTile label="Přidat tankování" onClick={() => openFuelForm()} dimmed={activeModal !== null}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16"/><path d="M3 22h12M14 10h2a2 2 0 012 2v3a1 1 0 001 1 1 1 0 001-1V8l-3-3"/>
+                <path d="M7 8h4M7 12h4"/>
+              </svg>
+            </ActionTile>
 
-            {/* Documents — opens modal */}
-            <button
-              onClick={() => setActiveModal(m => m === 'documents' ? null : 'documents')}
-              className="pressable"
-              style={{
-                background: activeModal === 'documents' ? '#f5f5f7' : '#141414',
-                border: `0.5px solid ${activeModal === 'documents' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)'}`,
-                borderRadius: 16,
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                height: 64,
-                touchAction: 'manipulation',
-                opacity: activeModal === 'reminders' ? 0.5 : 1,
-                transition: 'background 150ms, border-color 150ms, opacity 200ms',
-              }}
-            >
-              <div style={{
-                width: 36, height: 36,
-                background: activeModal === 'documents' ? '#e8e8e8' : '#1e1e1e',
-                borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                transition: 'background 150ms',
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'documents' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-              </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: activeModal === 'documents' ? '#0a0a0a' : '#f0f0f0', lineHeight: 1.2, transition: 'color 150ms', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Dokumenty</span>
-            </button>
+            {/* 3 — Statistiky */}
+            <ActionTile label="Statistiky" onClick={() => setActiveModal(m => m === 'stats' ? null : 'stats')} active={activeModal === 'stats'} dimmed={activeModal !== null && activeModal !== 'stats'}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'stats' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </ActionTile>
+
+            {/* 4 — Příští servis */}
+            <ActionTile label="Příští servis" onClick={() => setActiveModal(m => m === 'nextService' ? null : 'nextService')} active={activeModal === 'nextService'} dimmed={activeModal !== null && activeModal !== 'nextService'}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'nextService' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M9 16l2 2 4-4"/>
+              </svg>
+            </ActionTile>
+
+            {/* 5 — Pojištění / STK */}
+            <ActionTile label="Pojištění / STK" onClick={() => setActiveModal(m => m === 'insurance' ? null : 'insurance')} active={activeModal === 'insurance'} dimmed={activeModal !== null && activeModal !== 'insurance'}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'insurance' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </ActionTile>
+
+            {/* 6 — Výdaje */}
+            <ActionTile label="Výdaje" onClick={() => setActiveModal(m => m === 'expenses' ? null : 'expenses')} active={activeModal === 'expenses'} dimmed={activeModal !== null && activeModal !== 'expenses'}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activeModal === 'expenses' ? '#0a0a0a' : '#e8e8e8'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+              </svg>
+            </ActionTile>
           </div>
 
-          {/* Reminders modal */}
-          <CenterModal
-            isOpen={activeModal === 'reminders'}
-            onClose={() => setActiveModal(null)}
-            title="Připomínky"
-          >
-            {reminders.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <div style={{ fontSize: 15, color: '#0a0a0a', fontWeight: 500, marginTop: 12 }}>Vše v pořádku</div>
-                <div style={{ fontSize: 13, color: '#9a9da8', marginTop: 4 }}>Žádné aktivní připomínky</div>
+          {/* Statistiky modal */}
+          <CenterModal isOpen={activeModal === 'stats'} onClose={() => setActiveModal(null)} title="Statistiky">
+            {[
+              { label: 'Servis (letos)', value: statsServiceCosts.service > 0 ? `${statsServiceCosts.service.toLocaleString('cs-CZ')} Kč` : '–' },
+              { label: 'Pojištění & STK (letos)', value: statsServiceCosts.insurance > 0 ? `${statsServiceCosts.insurance.toLocaleString('cs-CZ')} Kč` : '–' },
+              { label: 'Palivo (letos)', value: statsFuelCost > 0 ? `${statsFuelCost.toLocaleString('cs-CZ')} Kč` : '–' },
+              { label: 'Celkem (letos)', value: (statsServiceCosts.total + statsFuelCost) > 0 ? `${(statsServiceCosts.total + statsFuelCost).toLocaleString('cs-CZ')} Kč` : '–', bold: true },
+              { label: 'Průměrná spotřeba', value: consumption > 0 ? `${consumption.toFixed(1)} l/100km` : '–' },
+              { label: 'Nájezd letos', value: yearlyMileage > 0 ? formatMileage(yearlyMileage) : '–' },
+            ].map((row, i, arr) => (
+              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < arr.length - 1 ? '0.5px solid rgba(0,0,0,0.06)' : 'none' }}>
+                <span style={{ fontSize: 14, color: '#555' }}>{row.label}</span>
+                <span style={{ fontSize: 14, color: '#0a0a0a', fontWeight: row.bold ? 700 : 500 }}>{row.value}</span>
               </div>
-            ) : (
-              reminders.map((r, i) => {
-                const status = getReminderStatus(r, mileage)
-                const statusColor = status === 'overdue' ? '#ef4444' : status === 'soon' ? '#f59e0b' : '#22c55e'
-                const statusLabel = status === 'overdue' ? 'PROŠLÉ' : status === 'soon' ? 'BRZY' : 'OK'
-                return (
-                  <div
-                    key={r.id}
-                    style={{
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      padding: '12px 0',
-                      borderBottom: i < reminders.length - 1 ? '0.5px solid rgba(0,0,0,0.06)' : 'none',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <ReminderDot status={status} />
-                      <div>
-                        <div style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{SERVICE_TYPE_LABELS[r.type]}</div>
-                        {(r.nextServiceDate || r.nextServiceMileage) && (
-                          <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>
-                            {r.nextServiceDate && `Do ${formatDate(r.nextServiceDate)}`}
-                            {r.nextServiceMileage && ` · ${formatMileage(r.nextServiceMileage)}`}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: statusColor }}>{statusLabel}</span>
-                  </div>
-                )
-              })
-            )}
-            <button
-              onClick={() => { navigate('/service'); setActiveModal(null) }}
-              style={{
-                marginTop: 16, paddingTop: 16,
-                borderTop: '0.5px solid rgba(0,0,0,0.06)',
-                fontSize: 14, fontWeight: 500, color: '#0a0a0a',
-                width: '100%', textAlign: 'center',
-                background: 'none', border: 'none', cursor: 'pointer',
-              }}
-            >
-              Zobrazit vše →
-            </button>
+            ))}
           </CenterModal>
 
-          {/* Documents modal */}
-          <CenterModal
-            isOpen={activeModal === 'documents'}
-            onClose={() => setActiveModal(null)}
-            title="Dokumenty"
-          >
-            {allDocs.length === 0 ? (
+          {/* Příští servis modal */}
+          <CenterModal isOpen={activeModal === 'nextService'} onClose={() => setActiveModal(null)} title="Příští servis">
+            {!nextServiceRecord ? (
               <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <div style={{ fontSize: 15, color: '#0a0a0a', fontWeight: 500, marginTop: 12 }}>Vše v pořádku</div>
-                <div style={{ fontSize: 13, color: '#9a9da8', marginTop: 4 }}>Žádné dokumenty</div>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <div style={{ fontSize: 15, color: '#0a0a0a', fontWeight: 500, marginTop: 12 }}>Žádný plánovaný servis</div>
               </div>
-            ) : (
-              allDocs.map((doc, i) => {
-                const days = doc.expiryDate ? daysUntil(doc.expiryDate) : null
-                const color = days === null ? '#9a9da8'
-                  : days <= 0 ? '#ef4444'
-                  : days <= 30 ? '#f59e0b'
-                  : days <= 60 ? 'rgba(245,158,11,0.7)'
-                  : '#22c55e'
-                const label = days === null ? 'bez expirace'
-                  : days <= 0 ? 'Expirováno'
-                  : days <= 60 ? `za ${days} dní`
-                  : formatDate(doc.expiryDate!)
-                return (
-                  <div
-                    key={doc.id}
-                    style={{
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      padding: '12px 0',
-                      borderBottom: i < allDocs.length - 1 ? '0.5px solid rgba(0,0,0,0.06)' : 'none',
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{doc.title}</div>
-                      <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>{documentTypeLabel[doc.type]}</div>
-                    </div>
-                    <span style={{ fontSize: 12, color, fontWeight: 500 }}>{label}</span>
+            ) : (() => {
+              const status = getReminderStatus(nextServiceRecord, mileage)
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a' }}>{SERVICE_TYPE_LABELS[nextServiceRecord.type]}</div>
+                    {status !== 'none' && <ReminderDot status={status} />}
                   </div>
-                )
-              })
-            )}
-            <button
-              onClick={() => { navigate('/documents'); setActiveModal(null) }}
-              style={{
-                marginTop: 16, paddingTop: 16,
-                borderTop: '0.5px solid rgba(0,0,0,0.06)',
-                fontSize: 14, fontWeight: 500, color: '#0a0a0a',
-                width: '100%', textAlign: 'center',
-                background: 'none', border: 'none', cursor: 'pointer',
-              }}
-            >
-              Zobrazit vše →
-            </button>
+                  {nextServiceRecord.nextServiceDate && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, color: '#555' }}>Datum</span>
+                      <span style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{formatDate(nextServiceRecord.nextServiceDate)}</span>
+                    </div>
+                  )}
+                  {nextServiceRecord.nextServiceMileage && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, color: '#555' }}>Při km</span>
+                      <span style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{formatMileage(nextServiceRecord.nextServiceMileage)}</span>
+                    </div>
+                  )}
+                  {nextServiceRecord.nextServiceDate && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, color: '#555' }}>Za</span>
+                      <span style={{ fontSize: 14, color: daysUntil(nextServiceRecord.nextServiceDate) < 0 ? '#ef4444' : daysUntil(nextServiceRecord.nextServiceDate) <= 30 ? '#f59e0b' : '#22c55e', fontWeight: 500 }}>
+                        {daysUntil(nextServiceRecord.nextServiceDate) < 0 ? `prošlé o ${Math.abs(daysUntil(nextServiceRecord.nextServiceDate))} dní` : `${daysUntil(nextServiceRecord.nextServiceDate)} dní`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+          </CenterModal>
+
+          {/* Pojištění / STK modal */}
+          <CenterModal isOpen={activeModal === 'insurance'} onClose={() => setActiveModal(null)} title="Pojištění & STK">
+            {insuranceItems.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <div style={{ fontSize: 15, color: '#0a0a0a', fontWeight: 500, marginTop: 12 }}>Vše v pořádku</div>
+              </div>
+            ) : insuranceItems.map((item, i) => {
+              const color = item.days < 0 ? '#ef4444' : item.days <= 30 ? '#f59e0b' : item.days <= 60 ? 'rgba(202,138,4,0.8)' : '#22c55e'
+              const daysLabel = item.days < 0 ? `prošlé o ${Math.abs(item.days)} dní` : item.days === 0 ? 'dnes' : `za ${item.days} dní`
+              return (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < insuranceItems.length - 1 ? '0.5px solid rgba(0,0,0,0.06)' : 'none' }}>
+                  <div>
+                    <div style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{item.label}</div>
+                    <div style={{ fontSize: 12, color: '#9a9da8', marginTop: 2 }}>{formatDate(item.date)}</div>
+                  </div>
+                  <span style={{ fontSize: 12, color, fontWeight: 500 }}>{daysLabel}</span>
+                </div>
+              )
+            })}
+          </CenterModal>
+
+          {/* Výdaje modal */}
+          <CenterModal isOpen={activeModal === 'expenses'} onClose={() => setActiveModal(null)} title="Výdaje">
+            {/* Segmented control */}
+            <div style={{ display: 'flex', background: 'rgba(0,0,0,0.06)', borderRadius: 10, padding: 2, marginBottom: 16, gap: 2 }}>
+              {([['year', 'Tento rok'], ['12months', '12 měsíců'], ['all', 'Vše']] as [CostPeriod, string][]).map(([val, lbl]) => (
+                <button key={val} onClick={() => setExpensePeriod(val)} style={{ flex: 1, padding: '6px 0', borderRadius: 8, fontSize: 13, fontWeight: expensePeriod === val ? 600 : 400, color: expensePeriod === val ? '#0a0a0a' : '#555', background: expensePeriod === val ? '#fff' : 'transparent', boxShadow: expensePeriod === val ? '0 1px 3px rgba(0,0,0,0.12)' : 'none', transition: 'all 200ms' }}>{lbl}</button>
+              ))}
+            </div>
+            {(() => {
+              const svcRecords = filterRecordsByPeriod(allCarServiceRecords, expensePeriod)
+              const svcCosts = calculateServiceCosts(svcRecords)
+              const fuelCost = getFuelCostForPeriod(expensePeriod)
+              const total = svcCosts.total + fuelCost
+              const months = getExpenseMonths(expensePeriod)
+              const avgMonthly = months > 0 ? Math.round(total / months) : 0
+              return (
+                <>
+                  {[
+                    { label: 'Servis', value: svcCosts.service },
+                    { label: 'Pojištění & STK', value: svcCosts.insurance },
+                    { label: 'Ostatní', value: svcCosts.other },
+                    { label: 'Palivo', value: fuelCost },
+                  ].map((row, i) => (
+                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
+                      <span style={{ fontSize: 14, color: '#555' }}>{row.label}</span>
+                      <span style={{ fontSize: 14, color: '#0a0a0a', fontWeight: 500 }}>{row.value > 0 ? `${row.value.toLocaleString('cs-CZ')} Kč` : '–'}</span>
+                    </div>
+                  ))}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 4px', borderTop: '0.5px solid rgba(0,0,0,0.12)', marginTop: 2 }}>
+                    <span style={{ fontSize: 16, color: '#0a0a0a', fontWeight: 700 }}>Celkem</span>
+                    <span style={{ fontSize: 16, color: '#0a0a0a', fontWeight: 700 }}>{total > 0 ? `${total.toLocaleString('cs-CZ')} Kč` : '–'}</span>
+                  </div>
+                  {total > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 4 }}>
+                      <span style={{ fontSize: 13, color: '#9a9da8' }}>Průměrně / měsíc</span>
+                      <span style={{ fontSize: 13, color: '#9a9da8' }}>{avgMonthly.toLocaleString('cs-CZ')} Kč</span>
+                    </div>
+                  )}
+                </>
+              )
+            })()}
           </CenterModal>
         </>
       )}
