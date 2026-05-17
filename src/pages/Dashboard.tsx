@@ -5,7 +5,7 @@ import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
 import { useDocumentStore } from '../stores/useDocumentStore'
 import { useReminders } from '../hooks/useReminders'
-import { getCurrentMileage, calculateConsumption, getLastMileageRecord } from '../utils/calculations'
+import { getCurrentMileage, calculateConsumption, getLastMileageRecord, getYearlyMileage } from '../utils/calculations'
 import { getReminderStatus } from '../utils/reminders'
 import { formatMileage, formatDate, daysUntil } from '../utils/formatters'
 import { fuelTypeLabel, documentTypeLabel } from '../utils/labels'
@@ -62,14 +62,14 @@ export default function Dashboard() {
     ? calculateConsumption(fuelRecords.filter(r => r.carId === activeCar.id))
     : 0
 
-  const serviceCount = activeCar
-    ? serviceRecords.filter(r => r.carId === activeCar.id && !r.deletedAt).length
+  const yearlyMileage = activeCar
+    ? getYearlyMileage(serviceRecords, fuelRecords, activeCar.id)
     : 0
 
   const animatedCarId = useRef<string | null>(null)
   const [displayMileage, setDisplayMileage] = useState(0)
   const [displayConsumption, setDisplayConsumption] = useState(0)
-  const [displayServiceCount, setDisplayServiceCount] = useState(0)
+  const [displayYearlyMileage, setDisplayYearlyMileage] = useState(0)
 
   useEffect(() => {
     if (!activeCar) return
@@ -77,13 +77,13 @@ export default function Dashboard() {
       animatedCarId.current = activeCar.id
       animateNumber(0, mileage, 800, setDisplayMileage)
       animateNumber(0, Math.round(consumption * 10), 800, v => setDisplayConsumption(v / 10))
-      animateNumber(0, serviceCount, 600, setDisplayServiceCount)
+      animateNumber(0, yearlyMileage, 700, setDisplayYearlyMileage)
     } else {
       setDisplayMileage(mileage)
       setDisplayConsumption(consumption)
-      setDisplayServiceCount(serviceCount)
+      setDisplayYearlyMileage(yearlyMileage)
     }
-  }, [activeCar, mileage, consumption, serviceCount])
+  }, [activeCar, mileage, consumption, yearlyMileage])
 
   const allDocs = documents
     .filter(d => !d.deletedAt)
@@ -240,9 +240,11 @@ export default function Dashboard() {
               <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>l/100km</div>
             </div>
             <div style={{ flex: 1, background: '#141414', borderRadius: 16, border: '0.5px solid rgba(255,255,255,0.08)', padding: '16px 12px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Servis</div>
-              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>{displayServiceCount}</div>
-              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>záznamů</div>
+              <div style={{ fontSize: 10, color: '#555', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Nájezd</div>
+              <div style={{ fontSize: 22, fontWeight: 600, color: '#f0f0f0', lineHeight: 1 }}>
+                {yearlyMileage > 0 ? displayYearlyMileage.toLocaleString('cs-CZ') : '–'}
+              </div>
+              <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>km / rok</div>
             </div>
           </div>
 

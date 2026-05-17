@@ -106,3 +106,35 @@ export function calculateConsumption(records: FuelRecord[]): number {
   if (segments.length === 0) return 0
   return segments.reduce((a, b) => a + b) / segments.length
 }
+
+export function getYearlyMileage(
+  serviceRecords: ServiceRecord[],
+  fuelRecords: FuelRecord[],
+  carId: string
+): number {
+  const now = new Date()
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+
+  const allRecords = [
+    ...serviceRecords
+      .filter(r => r.carId === carId && !r.deletedAt)
+      .map(r => ({ mileage: r.mileage, date: new Date(r.date) })),
+    ...fuelRecords
+      .filter(r => r.carId === carId && !r.deletedAt)
+      .map(r => ({ mileage: r.mileage, date: new Date(r.date) })),
+  ].sort((a, b) => a.date.getTime() - b.date.getTime())
+
+  const thisYearRecords = allRecords.filter(r => r.date >= startOfYear)
+  const beforeYearRecords = allRecords.filter(r => r.date < startOfYear)
+
+  if (thisYearRecords.length === 0) return 0
+
+  const firstThisYear = thisYearRecords[0].mileage
+  const lastThisYear = thisYearRecords[thisYearRecords.length - 1].mileage
+
+  const baseline = beforeYearRecords.length > 0
+    ? beforeYearRecords[beforeYearRecords.length - 1].mileage
+    : firstThisYear
+
+  return lastThisYear - baseline
+}
