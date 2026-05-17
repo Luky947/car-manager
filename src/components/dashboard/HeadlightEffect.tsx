@@ -39,7 +39,7 @@ export default function HeadlightEffect() {
       {/* Left headlight — main */}
       <div style={{
         position: 'absolute',
-        bottom: '34%',
+        bottom: '44%',
         left: '42%',
         width: '45px',
         height: '9px',
@@ -56,7 +56,7 @@ export default function HeadlightEffect() {
       {/* Right headlight */}
       <div style={{
         position: 'absolute',
-        bottom: '32%',
+        bottom: '42%',
         left: '30%',
         width: '30px',
         height: '7px',
