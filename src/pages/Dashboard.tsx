@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useCarStore } from '../stores/useCarStore'
 import { useServiceStore } from '../stores/useServiceStore'
 import { useFuelStore } from '../stores/useFuelStore'
@@ -15,7 +16,6 @@ import ReminderDot from '../components/ui/ReminderDot'
 import BottomSheet from '../components/ui/BottomSheet'
 import CarDetail from '../components/cars/CarDetail'
 import CenterModal from '../components/ui/CenterModal'
-import HeadlightEffect from '../components/dashboard/HeadlightEffect'
 
 function animateNumber(
   from: number,
@@ -81,15 +81,40 @@ function ActionTile({ label, onClick, children, active = false, dimmed = false }
   )
 }
 
+const delay = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
+
 export default function Dashboard() {
   const { cars, activeCar, setActiveCar } = useCarStore()
   const serviceRecords = useServiceStore(s => s.records)
   const fuelRecords = useFuelStore(s => s.records)
   const documents = useDocumentStore(s => s.documents)
   const { openCarForm, openServiceForm, openFuelForm } = useFab()
+  const location = useLocation()
   const [carDetailOpen, setCarDetailOpen] = useState(false)
   const [activeModal, setActiveModal] = useState<'stats' | 'nextService' | 'insurance' | 'expenses' | null>(null)
   const [expensePeriod, setExpensePeriod] = useState<CostPeriod>('year')
+  const [headlightsOn, setHeadlightsOn] = useState(false)
+
+  useEffect(() => {
+    if (location.pathname !== '/') return
+    let cancelled = false
+    async function welcomeBlink() {
+      await delay(600)
+      if (cancelled) return
+      setHeadlightsOn(true)
+      await delay(180)
+      if (cancelled) return
+      setHeadlightsOn(false)
+      await delay(120)
+      if (cancelled) return
+      setHeadlightsOn(true)
+      await delay(220)
+      if (cancelled) return
+      setHeadlightsOn(false)
+    }
+    welcomeBlink()
+    return () => { cancelled = true }
+  }, [location.pathname])
 
   const mileage = activeCar ? getCurrentMileage(activeCar, serviceRecords, fuelRecords) : 0
 
@@ -283,9 +308,7 @@ export default function Dashboard() {
             }} />
 
             {/* Car */}
-            <img
-              src="/car-placeholder.png"
-              alt="Auto"
+            <div
               onClick={() => setCarDetailOpen(true)}
               style={{
                 position: 'absolute',
@@ -295,17 +318,39 @@ export default function Dashboard() {
                 width: '115%',
                 maxWidth: '440px',
                 height: '240px',
-                objectFit: 'contain',
                 cursor: 'pointer',
-                filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.9))',
                 transition: 'transform 150ms cubic-bezier(0.2,0,0,1)',
               }}
               onPointerDown={e => (e.currentTarget.style.transform = 'translateX(-50%) scale(0.97)')}
               onPointerUp={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
               onPointerLeave={e => (e.currentTarget.style.transform = 'translateX(-50%)')}
-            />
-
-            <HeadlightEffect />
+            >
+              <img
+                src="/car-placeholder.png"
+                alt="Auto"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  display: 'block',
+                  filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.9))',
+                }}
+              />
+              <img
+                src="/car-on.png"
+                alt=""
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  opacity: headlightsOn ? 1 : 0,
+                  transition: headlightsOn ? 'opacity 40ms ease' : 'opacity 60ms ease',
+                  filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.9))',
+                }}
+              />
+            </div>
 
             {/* Bottom fade into page background */}
             <div style={{
