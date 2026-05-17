@@ -3,12 +3,9 @@ import { useServiceStore } from '../../stores/useServiceStore'
 import { useFuelStore } from '../../stores/useFuelStore'
 import { getCurrentMileage, getLastMileageRecord } from '../../utils/calculations'
 import { fuelTypeLabel } from '../../utils/labels'
-import BottomSheet from '../ui/BottomSheet'
 
 interface Props {
   car: Car | null
-  isOpen: boolean
-  onClose: () => void
   onEdit: () => void
 }
 
@@ -35,7 +32,7 @@ function SectionLabel({ children }: { children: string }) {
   )
 }
 
-export default function CarDetail({ car, isOpen, onClose, onEdit }: Props) {
+export default function CarDetail({ car, onEdit }: Props) {
   const serviceRecords = useServiceStore(s => s.records)
   const fuelRecords = useFuelStore(s => s.records)
 
@@ -55,63 +52,47 @@ export default function CarDetail({ car, isOpen, onClose, onEdit }: Props) {
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose}>
-      <div style={{ padding: '0 20px 32px' }}>
-        {/* Header */}
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ fontSize: 22, fontWeight: 600, color: '#0a0a0a', marginBottom: 4 }}>
-            {car.brand} {car.model}
-          </div>
-          <div style={{ fontSize: 14, color: '#5c6070' }}>
-            {car.year} · {car.licensePlate} · {fuelTypeLabel[car.fuelType]}
-          </div>
+    <div style={{ padding: '0 20px 32px' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 22, fontWeight: 600, color: '#0a0a0a', marginBottom: 4 }}>
+          {car.brand} {car.model}
         </div>
-
-        {/* Informace */}
-        <SectionLabel>Informace</SectionLabel>
-        <Row label="Značka" value={car.brand} />
-        <Row label="Model" value={car.model} />
-        <Row label="Rok výroby" value={car.year.toString()} />
-        <Row label="SPZ" value={car.licensePlate} />
-        <Row label="VIN" value={car.vin || '–'} />
-        <Row label="Typ paliva" value={fuelTypeLabel[car.fuelType]} />
-        <Row label="Barva" value={car.color || '–'} />
-        <Row label="Poznámky" value={car.notes || '–'} />
-
-        {/* Aktuální stav */}
-        <SectionLabel>Aktuální stav</SectionLabel>
-        <Row label="Aktuální km" value={`${mileage.toLocaleString('cs-CZ')} km`} />
-        <Row label="Aktualizováno" value={lastRecord ? formatDate(lastRecord.date) : '–'} />
-        <Row label="Servisní záznamy" value={serviceCount.toString()} />
-        <Row label="Tankování" value={fuelCount.toString()} />
-
-        {/* Buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24 }}>
-          <button
-            type="button"
-            onClick={onEdit}
-            style={{
-              width: '100%', padding: 16, borderRadius: 14,
-              fontSize: 16, fontWeight: 600, touchAction: 'manipulation',
-              background: '#0a0a0a', color: '#f0f0f0', border: 'none',
-            }}
-          >
-            Upravit auto
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{
-              width: '100%', padding: 16, borderRadius: 14,
-              fontSize: 16, fontWeight: 600, touchAction: 'manipulation',
-              background: 'transparent', color: '#0a0a0a',
-              border: '1.5px solid rgba(0,0,0,0.15)',
-            }}
-          >
-            Zavřít
-          </button>
+        <div style={{ fontSize: 14, color: '#5c6070' }}>
+          {car.year} · {car.licensePlate} · {fuelTypeLabel[car.fuelType]}
         </div>
       </div>
-    </BottomSheet>
+
+      {/* Informace */}
+      <SectionLabel>Informace</SectionLabel>
+      <Row label="Značka" value={car.brand} />
+      <Row label="Model" value={car.model} />
+      <Row label="Rok výroby" value={car.year.toString()} />
+      <Row label="SPZ" value={car.licensePlate} />
+      <Row label="VIN" value={car.vin || '–'} />
+      <Row label="Typ paliva" value={fuelTypeLabel[car.fuelType]} />
+      <Row label="Barva" value={car.color || '–'} />
+      <Row label="Poznámky" value={car.notes || '–'} />
+
+      {/* Aktuální stav */}
+      <SectionLabel>Aktuální stav</SectionLabel>
+      <Row label="Aktuální km" value={`${mileage.toLocaleString('cs-CZ')} km`} />
+      <Row label="Aktualizováno" value={lastRecord ? formatDate(lastRecord.date) : '–'} />
+      <Row label="Servisní záznamy" value={serviceCount.toString()} />
+      <Row label="Tankování" value={fuelCount.toString()} />
+
+      {/* Button */}
+      <button
+        type="button"
+        onClick={onEdit}
+        style={{
+          width: '100%', padding: 16, borderRadius: 14, marginTop: 24,
+          fontSize: 16, fontWeight: 600, touchAction: 'manipulation',
+          background: '#0a0a0a', color: '#f0f0f0', border: 'none',
+        }}
+      >
+        Upravit auto
+      </button>
+    </div>
   )
 }

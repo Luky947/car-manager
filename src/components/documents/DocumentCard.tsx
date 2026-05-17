@@ -58,6 +58,7 @@ export default function DocumentCard({ doc, onPress }: Props) {
         borderRadius: 16,
         border: '0.5px solid rgba(255,255,255,0.07)',
         padding: 16,
+        minHeight: 60,
         marginBottom: 8,
         touchAction: 'manipulation',
         textAlign: 'left',

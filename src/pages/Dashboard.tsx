@@ -12,6 +12,7 @@ import { fuelTypeLabel, documentTypeLabel } from '../utils/labels'
 import { SERVICE_TYPE_LABELS } from '../utils/serviceTypes'
 import { useFab } from '../context/FabContext'
 import ReminderDot from '../components/ui/ReminderDot'
+import BottomSheet from '../components/ui/BottomSheet'
 import CarDetail from '../components/cars/CarDetail'
 import CenterModal from '../components/ui/CenterModal'
 
@@ -490,15 +491,19 @@ export default function Dashboard() {
         </>
       )}
 
-      <CarDetail
-        car={activeCar ?? null}
+      <BottomSheet
         isOpen={carDetailOpen}
         onClose={() => setCarDetailOpen(false)}
-        onEdit={() => {
-          setCarDetailOpen(false)
-          setTimeout(() => openCarForm(activeCar ?? undefined), 320)
-        }}
-      />
+        title="Detail auta"
+      >
+        <CarDetail
+          car={activeCar ?? null}
+          onEdit={() => {
+            setCarDetailOpen(false)
+            setTimeout(() => openCarForm(activeCar ?? undefined), 320)
+          }}
+        />
+      </BottomSheet>
     </div>
   )
 }

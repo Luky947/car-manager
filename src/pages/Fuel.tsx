@@ -47,8 +47,6 @@ export default function Fuel() {
 
   return (
     <div style={{ padding: '56px 20px 20px', WebkitOverflowScrolling: 'touch' }}>
-      {/* Pull indicator */}
-      <div style={{ width: 36, height: 4, background: 'rgba(255,255,255,0.2)', borderRadius: 2, margin: '0 auto 16px' }} />
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>

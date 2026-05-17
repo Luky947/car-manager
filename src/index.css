@@ -69,6 +69,7 @@ button {
   cursor: pointer;
   font-family: inherit;
   color: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 input, textarea, select {
@@ -104,7 +105,7 @@ a {
 }
 
 .pressable:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
   opacity: 0.85;
 }
 
