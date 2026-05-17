@@ -33,7 +33,7 @@ function animateNumber(
 }
 
 
-const WINE_BORDER_NORMAL = 'linear-gradient(#141414, #141414) padding-box, linear-gradient(160deg, #7a1530 0%, #b8335a 35%, #7a1530 70%, #5a0f22 100%) border-box'
+const WINE_BORDER_NORMAL = 'linear-gradient(#141414, #141414) padding-box, linear-gradient(160deg, #4a0f1c 0%, #7a1a30 40%, #5c1222 70%, #3d0c18 100%) border-box'
 const WINE_BORDER_ACTIVE = 'linear-gradient(#1e1010, #1e1010) padding-box, linear-gradient(160deg, #9e2d47 0%, #c4436a 35%, #9e2d47 70%, #6b1228 100%) border-box'
 
 function ActionTile({ label, onClick, children, active = false, dimmed = false }: {
@@ -63,10 +63,10 @@ function ActionTile({ label, onClick, children, active = false, dimmed = false }
         opacity: dimmed ? 0.5 : pressed ? 0.85 : 1,
         transform: pressed ? 'scale(0.97)' : 'scale(1)',
         boxShadow: pressed
-          ? '0 0 20px rgba(184,51,90,0.35)'
+          ? '0 0 16px rgba(122,26,48,0.25)'
           : active
-            ? '0 0 24px rgba(196,67,106,0.25)'
-            : '0 0 16px rgba(184,51,90,0.2)',
+            ? '0 0 20px rgba(122,26,48,0.2)'
+            : '0 0 12px rgba(122,26,48,0.12)',
         transition: pressed
           ? 'transform 60ms cubic-bezier(0.2,0,0,1), opacity 60ms, box-shadow 60ms'
           : 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), opacity 200ms, box-shadow 200ms',

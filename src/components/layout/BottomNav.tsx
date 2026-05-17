@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useFab } from '../../context/FabContext'
 
 function IconHome({ active }: { active: boolean }) {
-  const c = active ? '#e8e8e8' : '#555'
+  const c = active ? '#f0f0f0' : '#888'
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
@@ -12,7 +12,7 @@ function IconHome({ active }: { active: boolean }) {
 }
 
 function IconWrench({ active }: { active: boolean }) {
-  const c = active ? '#e8e8e8' : '#555'
+  const c = active ? '#f0f0f0' : '#888'
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
       <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
@@ -21,7 +21,7 @@ function IconWrench({ active }: { active: boolean }) {
 }
 
 function IconFuel({ active }: { active: boolean }) {
-  const c = active ? '#e8e8e8' : '#555'
+  const c = active ? '#f0f0f0' : '#888'
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16" />
@@ -32,7 +32,7 @@ function IconFuel({ active }: { active: boolean }) {
 }
 
 function IconSettings({ active }: { active: boolean }) {
-  const c = active ? '#e8e8e8' : '#555'
+  const c = active ? '#f0f0f0' : '#888'
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
@@ -42,7 +42,7 @@ function IconSettings({ active }: { active: boolean }) {
 }
 
 function IconDoc({ active }: { active: boolean }) {
-  const c = active ? '#e8e8e8' : '#555'
+  const c = active ? '#f0f0f0' : '#888'
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -121,7 +121,7 @@ export default function BottomNav() {
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
               <Icon active={active} />
-              <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#555', fontWeight: active ? 600 : 400, letterSpacing: '0.02em', transition: 'color 200ms cubic-bezier(0.2,0,0,1)' }}>
+              <span style={{ fontSize: 10, color: active ? '#f0f0f0' : '#888', fontWeight: active ? 600 : 400, letterSpacing: '0.02em', transition: 'color 200ms cubic-bezier(0.2,0,0,1)' }}>
                 {label}
               </span>
             </div>
@@ -186,7 +186,7 @@ export default function BottomNav() {
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
               <Icon active={active} />
-              <span style={{ fontSize: 10, color: active ? '#e8e8e8' : '#555', fontWeight: active ? 600 : 400, letterSpacing: '0.02em', transition: 'color 200ms cubic-bezier(0.2,0,0,1)' }}>
+              <span style={{ fontSize: 10, color: active ? '#f0f0f0' : '#888', fontWeight: active ? 600 : 400, letterSpacing: '0.02em', transition: 'color 200ms cubic-bezier(0.2,0,0,1)' }}>
                 {label}
               </span>
             </div>
