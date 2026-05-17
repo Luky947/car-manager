@@ -1,5 +1,6 @@
 import type { Document } from '../../types'
 import { daysUntil } from '../../utils/formatters'
+import { usePressable } from '../../hooks/usePressable'
 
 interface Props {
   doc: Document
@@ -43,18 +44,21 @@ function expiryInfo(days: number | null, expiryDate: string | null): { label: st
 export default function DocumentCard({ doc, onPress }: Props) {
   const days = doc.expiryDate ? daysUntil(doc.expiryDate) : null
   const { label, color } = expiryInfo(days, doc.expiryDate)
+  const { handlers, style: pressStyle } = usePressable(() => {
+    navigator.vibrate?.(10)
+    onPress()
+  })
 
   return (
     <button
       type="button"
-      onClick={() => { navigator.vibrate?.(10); onPress() }}
-      className="pressable"
+      {...handlers}
       style={{
+        ...pressStyle,
         display: 'flex',
         alignItems: 'center',
         gap: 12,
         width: '100%',
-        background: '#141414',
         borderRadius: 16,
         border: '0.5px solid rgba(255,255,255,0.07)',
         padding: 16,
